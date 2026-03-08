@@ -650,7 +650,7 @@
 </div>
 
 <script>
-    function initStoryWedLottery() {
+    document.addEventListener('DOMContentLoaded', () => {
         if (typeof gsap !== 'undefined') {
             gsap.from(".gs-reveal", {
                 y: 30,
@@ -1485,12 +1485,5 @@
 
         renderPrizeRows([]);
         updateParticipantCountDisplay();
-    }
-
-    // 將啟動時機改為更安全的作法，避免 CMS 後台非同步載入導致失效
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initStoryWedLottery);
-    } else {
-        initStoryWedLottery();
-    }
+    });
 </script>
