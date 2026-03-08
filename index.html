@@ -1,0 +1,1496 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;400;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    brand: {
+                        rosegold: '#B76E79',
+                        rosegold_light: '#E6B3A3',
+                        dustyrose: '#9E5C66',
+                        champagne: '#D4AF37',
+                        text: '#4A3B32',
+                        bg: '#FFFaf8'
+                    }
+                },
+                fontFamily: {
+                    serif: ['"Noto Serif TC"', '"Playfair Display"', 'serif'],
+                    sans: ['"Cormorant Garamond"', 'sans-serif'],
+                }
+            }
+        }
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<style>
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-border: rgba(255, 255, 255, 0.9);
+        --glass-shadow: rgba(183, 110, 121, 0.1);
+    }
+
+    #storywed-lottery-app {
+        background: linear-gradient(135deg, #FFFaf8 0%, #F8E8E8 100%);
+        color: #4A3B32;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        font-family: 'Noto Serif TC', serif;
+        min-height: 850px;
+        height: auto;
+        position: relative;
+        width: 100%;
+        margin: 2rem 0;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 40px rgba(183, 110, 121, 0.1);
+    }
+
+    .petals-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .petal {
+        position: absolute;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95) 0%, rgba(248,232,235,0.85) 100%);
+        border-radius: 70% 30% 80% 20% / 60% 70% 30% 40%;
+        filter: blur(0.5px);
+        opacity: 0;
+    }
+
+    .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 12px 45px var(--glass-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    }
+
+    .text-gradient {
+        background: linear-gradient(135deg, #B76E79 0%, #D4AF37 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .romantic-pulse {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        transform: translate(-50%, -50%);
+        border-radius: 9999px;
+        background: radial-gradient(circle, transparent 30%, rgba(183, 110, 121, 0.25) 70%, transparent 100%);
+        z-index: -1;
+        animation: softPulse 2.8s ease-in-out infinite;
+    }
+
+    @keyframes softPulse {
+        0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+        50% { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
+        100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+    }
+
+    @keyframes auraPulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+        50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+    }
+
+    .draw-aura-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(circle, rgba(183, 110, 121, 0.35) 0%, rgba(230, 179, 163, 0.15) 50%, transparent 75%);
+        filter: blur(12px);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        transform: translate(-50%, -50%);
+        animation: auraPulse 5s ease-in-out infinite;
+    }
+
+    #storywed-lottery-app input,
+    #storywed-lottery-app textarea {
+        background: rgba(255,255,255,0.9);
+        border: 1px solid rgba(183, 110, 121, 0.25);
+        color: #4A3B32;
+        transition: all 0.3s ease;
+        max-width: 100%;
+    }
+
+    #storywed-lottery-app input:focus,
+    #storywed-lottery-app textarea:focus {
+        outline: none;
+        border-color: rgba(183, 110, 121, 0.7);
+        background: #ffffff;
+        box-shadow: 0 0 15px rgba(183, 110, 121, 0.2);
+    }
+
+    #storywed-lottery-app ::-webkit-scrollbar { width: 6px; }
+    #storywed-lottery-app ::-webkit-scrollbar-track { background: rgba(255,255,255,0.5); border-radius: 10px; }
+    #storywed-lottery-app ::-webkit-scrollbar-thumb { background: rgba(183, 110, 121, 0.3); border-radius: 10px; }
+    #storywed-lottery-app ::-webkit-scrollbar-thumb:hover { background: rgba(183, 110, 121, 0.6); }
+
+    .hide-view {
+        display: none !important;
+        opacity: 0;
+    }
+
+    .draw-mode-card {
+        position: relative;
+        border: 1px solid rgba(183, 110, 121, 0.18);
+        background: rgba(255,255,255,0.68);
+        border-radius: 1.25rem;
+        padding: 1rem 1rem 1rem 3.25rem;
+        cursor: pointer;
+        transition: all 0.28s ease;
+        box-shadow: 0 6px 18px rgba(183, 110, 121, 0.05);
+    }
+
+    .draw-mode-card:hover {
+        transform: translateY(-2px);
+        background: rgba(255,255,255,0.88);
+        box-shadow: 0 12px 24px rgba(183, 110, 121, 0.10);
+    }
+
+    .draw-mode-card input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .draw-mode-indicator {
+        position: absolute;
+        top: 1.15rem;
+        left: 1rem;
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: 9999px;
+        border: 2px solid rgba(183, 110, 121, 0.45);
+        background: white;
+        box-shadow: inset 0 0 0 3px white;
+        transition: all 0.25s ease;
+    }
+
+    .draw-mode-card input[type="radio"]:checked + .draw-mode-indicator {
+        background: #B76E79;
+        border-color: #B76E79;
+        box-shadow: inset 0 0 0 3px white, 0 0 0 6px rgba(183, 110, 121, 0.12);
+    }
+
+    .draw-mode-card:has(input[type="radio"]:checked) {
+        border-color: rgba(183, 110, 121, 0.55);
+        background: linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248,232,235,0.85) 100%);
+        box-shadow: 0 16px 30px rgba(183, 110, 121, 0.12);
+    }
+
+    .draw-mode-title {
+        font-size: 1rem;
+        color: #4A3B32;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+    }
+
+    .draw-mode-desc {
+        margin-top: 0.35rem;
+        font-size: 0.86rem;
+        line-height: 1.75;
+        color: rgba(74, 59, 50, 0.68);
+    }
+
+    .mode-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.45rem 0.9rem;
+        border-radius: 9999px;
+        background: rgba(255,255,255,0.82);
+        border: 1px solid rgba(183,110,121,0.18);
+        color: #9E5C66;
+        font-size: 0.78rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        box-shadow: 0 6px 18px rgba(183,110,121,0.06);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .result-card {
+        background: rgba(255,255,255,0.72);
+        border: 1px solid rgba(183,110,121,0.16);
+        border-radius: 1.5rem;
+        padding: 1.1rem 1.25rem;
+        box-shadow: 0 10px 28px rgba(183,110,121,0.08);
+        transition: all 0.25s ease;
+    }
+
+    .result-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 34px rgba(183,110,121,0.12);
+        background: rgba(255,255,255,0.9);
+    }
+
+    .result-order-badge {
+        width: 3rem;
+        height: 3rem;
+        min-width: 3rem;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #B76E79 0%, #E6B3A3 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 10px 24px rgba(183,110,121,0.22);
+    }
+
+    .result-label {
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        color: rgba(74, 59, 50, 0.45);
+        text-transform: uppercase;
+        margin-bottom: 0.25rem;
+    }
+
+    .result-value {
+        color: #4A3B32;
+        font-size: 1.05rem;
+        line-height: 1.8;
+        word-break: break-word;
+    }
+
+    .empty-result-box {
+        background: rgba(255,255,255,0.58);
+        border: 1px dashed rgba(183,110,121,0.28);
+        border-radius: 1.5rem;
+        padding: 2rem;
+        color: rgba(74,59,50,0.6);
+    }
+
+    .utility-button {
+        background: rgba(255,255,255,0.72);
+        border: 1px solid rgba(183,110,121,0.18);
+        color: #9E5C66;
+        border-radius: 9999px;
+        padding: 0.8rem 1.2rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.08em;
+        transition: all 0.28s ease;
+        box-shadow: 0 8px 20px rgba(183,110,121,0.06);
+    }
+
+    .utility-button:hover {
+        transform: translateY(-2px);
+        background: rgba(255,255,255,0.92);
+        box-shadow: 0 12px 26px rgba(183,110,121,0.12);
+    }
+
+    #results-view {
+        width: 100%;
+        max-height: calc(100vh - 7rem);
+        overflow: hidden;
+    }
+
+    .results-scroll-area {
+        max-height: calc(100vh - 11rem);
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 0.35rem;
+    }
+
+    #storywed-lottery-app:fullscreen #results-view,
+    #storywed-lottery-app:-webkit-full-screen #results-view {
+        max-height: calc(100vh - 2rem);
+    }
+
+    #storywed-lottery-app:fullscreen .results-scroll-area,
+    #storywed-lottery-app:-webkit-full-screen .results-scroll-area {
+        max-height: calc(100vh - 8rem);
+    }
+
+    #import-modal {
+        display: none;
+    }
+
+    #import-modal.show {
+        display: flex !important;
+    }
+
+    .toast-wrap {
+        position: fixed;
+        right: 20px;
+        bottom: 24px;
+        z-index: 10020;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        pointer-events: none;
+    }
+
+    .toast-card {
+        min-width: 280px;
+        max-width: 420px;
+        background: rgba(255,255,255,0.94);
+        border: 1px solid rgba(183,110,121,0.18);
+        box-shadow: 0 18px 40px rgba(183,110,121,0.18);
+        border-radius: 20px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        pointer-events: auto;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .toast-card.success {
+        border-color: rgba(183,110,121,0.22);
+    }
+
+    .toast-card.error {
+        border-color: rgba(220,38,38,0.2);
+    }
+
+    .toast-icon {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #B76E79 0%, #E6B3A3 100%);
+        color: white;
+        font-size: 18px;
+        margin-top: 2px;
+    }
+
+    .toast-card.error .toast-icon {
+        background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+    }
+
+    .toast-title {
+        color: #9E5C66;
+        font-size: 0.82rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+        font-family: "Cormorant Garamond", sans-serif;
+        font-weight: 700;
+    }
+
+    .toast-message {
+        color: #4A3B32;
+        font-size: 0.95rem;
+        line-height: 1.65;
+    }
+
+    @media (max-width: 640px) {
+        .toast-wrap {
+            left: 12px;
+            right: 12px;
+            bottom: 14px;
+        }
+
+        .toast-card {
+            min-width: auto;
+            max-width: none;
+            width: 100%;
+        }
+    }
+</style>
+
+<div id="storywed-lottery-app" class="antialiased selection:bg-brand-rosegold selection:text-white">
+    <div id="celebration-container" class="absolute top-0 left-0 w-full h-full pointer-events-none z-[9999] overflow-hidden"></div>
+    <div class="petals-overlay" id="petals-container"></div>
+
+    <div id="toast-wrap" class="toast-wrap"></div>
+
+    <header class="absolute top-0 left-0 w-full z-50 p-6 flex justify-between items-center pointer-events-none">
+        <div class="font-sans text-brand-rosegold text-xl md:text-2xl tracking-[0.3em] uppercase font-bold pointer-events-auto">StoryWed</div>
+        <div class="flex gap-4 pointer-events-auto flex-wrap justify-end">
+            <div id="header-draw-mode" class="mode-status-badge hide-view">
+                <iconify-icon icon="ph:sparkle-light" class="text-base"></iconify-icon>
+                <span id="header-draw-mode-text">隨機抽出</span>
+            </div>
+            <div class="font-sans text-brand-text/80 text-sm tracking-widest bg-white/70 px-5 py-2.5 rounded-full border border-white/80 shadow-sm backdrop-blur-lg">
+                賓客：<span id="header-pool-left" class="font-bold text-brand-rosegold text-base">0</span>
+            </div>
+            <div id="header-prize-status" class="font-sans text-brand-text/80 text-sm tracking-widest bg-white/70 px-5 py-2.5 rounded-full border border-white/80 shadow-sm backdrop-blur-lg hide-view">
+                獎項：<span id="header-prize-left" class="font-bold text-brand-dustyrose text-base">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 w-full min-h-[850px] flex flex-col items-center justify-center p-4 pt-24 pb-12">
+        <section id="setup-view" class="w-full max-w-5xl glass-panel rounded-[2rem] p-8 md:p-12 relative overflow-hidden flex flex-col">
+            <div class="text-center mb-10 gs-reveal relative z-10">
+                <div class="font-sans text-brand-rosegold text-sm tracking-[0.3em] mb-2 uppercase font-bold">StoryWed Wedding</div>
+                <h1 class="text-4xl md:text-5xl font-serif mb-3 text-gradient font-semibold tracking-tight">幸福故事館抽獎系統</h1>
+                <p class="text-brand-text/60 font-serif text-base tracking-widest max-w-2xl mx-auto">設定您的專屬名單。若不需獎項，將右側獎項全數刪除即可啟用「純抽名字」模式。</p>
+            </div>
+
+            <div class="gs-reveal relative z-10 mb-8">
+                <div class="mb-3 font-serif text-sm tracking-widest text-brand-text flex items-center gap-2 font-semibold">
+                    <iconify-icon icon="ph:shuffle-angular-light" class="text-xl text-brand-rosegold"></iconify-icon>
+                    獎項抽出方式
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="draw-mode-card">
+                        <input type="radio" name="draw-mode" value="random" checked>
+                        <span class="draw-mode-indicator"></span>
+                        <div class="draw-mode-title">隨機抽出</div>
+                        <div class="draw-mode-desc">
+                            維持目前模式，先抽出得獎名字，再從獎項池中隨機抽出對應獎項。
+                        </div>
+                    </label>
+
+                    <label class="draw-mode-card">
+                        <input type="radio" name="draw-mode" value="sequential">
+                        <span class="draw-mode-indicator"></span>
+                        <div class="draw-mode-title">依序抽出（由上往下）</div>
+                        <div class="draw-mode-desc">
+                            先依照獎項列表順序公布本輪獎項，再從賓客名單中隨機抽出該獎項得主。
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 relative z-10">
+                <div class="gs-reveal flex flex-col h-[320px] lg:h-[400px]">
+                    <label class="font-serif text-sm tracking-widest text-brand-text mb-3 flex items-center gap-2 font-semibold">
+                        <iconify-icon icon="ph:users-three-light" class="text-xl text-brand-rosegold"></iconify-icon> 參加賓客名單 (每行一位)
+                    </label>
+                    <div class="relative flex-grow group">
+                        <textarea id="participants-data" class="w-full h-full rounded-2xl p-5 font-serif text-base leading-relaxed resize-none shadow-inner" placeholder="例如：&#10;Nicole&#10;Annie&#10;李小明..."></textarea>
+                        <div class="absolute bottom-4 right-4 text-sm font-serif text-brand-text/40 pointer-events-none group-focus-within:text-brand-rosegold transition-colors">
+                            共 <span id="participant-count" class="font-bold text-brand-rosegold text-base">0</span> 位
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gs-reveal flex flex-col h-[320px] lg:h-[400px]">
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="font-serif text-sm tracking-widest text-brand-text flex items-center gap-2 font-semibold">
+                            <iconify-icon icon="ph:gift-light" class="text-xl text-brand-rosegold"></iconify-icon> 獎項池 (選填)
+                        </label>
+                        <button type="button" id="add-prize-btn" class="text-sm font-serif text-brand-rosegold hover:text-brand-champagne flex items-center gap-1.5 transition-colors bg-white/50 px-3 py-1.5 rounded-full shadow-sm hover:bg-white border border-white">
+                            <iconify-icon icon="ph:plus-circle-light" class="text-lg"></iconify-icon> 新增獎項
+                        </button>
+                    </div>
+
+                    <div id="prizes-list" class="flex-grow overflow-y-auto pr-2 space-y-3 pb-4">
+                        <div class="prize-row flex gap-2 items-center group bg-white/60 p-2.5 rounded-xl border border-white shadow-sm flex-wrap sm:flex-nowrap transition-all hover:shadow-md hover:bg-white">
+                            <input type="text" class="prize-name flex-grow min-w-[120px] rounded-lg px-3 py-2 text-sm font-serif border-none bg-white/80 focus:bg-white" placeholder="獎項名稱 (例: 浪漫雙人餐券)">
+                            <span class="text-brand-text/50 text-xs font-sans whitespace-nowrap">數量</span>
+                            <input type="number" min="1" class="prize-count w-16 rounded-lg px-2 py-2 text-sm font-serif text-center border-none bg-white/80 focus:bg-white" value="1">
+                            <button type="button" class="remove-prize-btn text-brand-text/30 hover:text-red-400 transition-colors p-2" title="刪除">
+                                <iconify-icon icon="ph:trash-light" class="text-lg"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 gs-reveal relative z-10">
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <button type="button" id="btn-export-config" class="utility-button font-serif">
+                        <iconify-icon icon="ph:upload-simple-light" class="text-lg"></iconify-icon>
+                        一鍵導出
+                    </button>
+                    <button type="button" id="btn-import-config" class="utility-button font-serif">
+                        <iconify-icon icon="ph:download-simple-light" class="text-lg"></iconify-icon>
+                        一鍵導入
+                    </button>
+                </div>
+                <p class="mt-3 text-center text-brand-text/45 text-sm tracking-widest font-serif">可先完成設定並導出代碼，活動開始前再貼上代碼快速還原。</p>
+            </div>
+
+            <div class="mt-10 lg:mt-12 flex flex-col items-center justify-center gs-reveal relative z-10">
+                <button type="button" id="go-to-draw-btn" class="group relative px-14 py-4 bg-gradient-to-r from-brand-rosegold to-brand-rosegold_light text-white rounded-full hover:shadow-[0_10px_30px_rgba(183,110,121,0.4)] transition-all duration-300 font-serif tracking-widest text-base font-semibold overflow-hidden hover:-translate-y-0.5 border border-white/20">
+                    <span class="relative z-10 flex items-center gap-2">
+                        完成設定，進入抽獎 <iconify-icon icon="ph:arrow-right-bold" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+                    </span>
+                </button>
+                <p class="mt-5 text-brand-text/50 font-serif text-sm tracking-widest text-center">電腦呈現效果最佳</p>
+            </div>
+        </section>
+
+        <section id="draw-view" class="w-full max-w-5xl hide-view flex-col items-center justify-center relative min-h-[600px]">
+            <div id="draw-stage" class="relative w-full aspect-[4/3] md:aspect-[21/9] glass-panel rounded-[2.5rem] overflow-hidden shadow-[0_15px_50px_rgba(183,110,121,0.15)] border-2 border-white group mb-10">
+                <div class="draw-aura-bg"></div>
+
+                <div class="absolute inset-0 flex flex-col items-center justify-center z-10 w-full px-6 pointer-events-none transition-all duration-500">
+                    <div id="winner-name" class="text-6xl md:text-8xl font-bold tracking-[0.05em] text-brand-text drop-shadow-sm transition-all duration-300 font-serif w-full text-center whitespace-nowrap text-ellipsis px-4 pt-2 pb-8 leading-[1.4] overflow-visible flex items-center justify-center pointer-events-auto">
+                        <iconify-icon icon="ph:gift-light" class="text-brand-rosegold animate-pulse text-8xl md:text-9xl"></iconify-icon>
+                    </div>
+
+                    <div id="winner-prize" class="hidden text-3xl md:text-4xl font-serif text-brand-dustyrose tracking-widest mt-4 md:mt-6 opacity-0 transform translate-y-4 transition-all duration-500 font-semibold drop-shadow-sm items-center justify-center gap-2.5 z-20 pointer-events-none pb-2 leading-normal overflow-visible"></div>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center gap-6 relative z-10 w-full max-w-md">
+                <div class="relative w-full flex justify-center h-16 items-center">
+                    <button type="button" id="btn-action-name" class="absolute z-10 px-14 py-4 bg-gradient-to-r from-brand-rosegold to-brand-rosegold_light text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(183,110,121,0.4)] hover:shadow-[0_15px_40px_rgba(183,110,121,0.6)] transition-all duration-300 font-serif border border-white/20 hover:-translate-y-0.5">
+                        抽取幸運兒
+                    </button>
+
+                    <button type="button" id="btn-action-prize" class="absolute z-10 px-14 py-4 bg-gradient-to-r from-brand-rosegold to-brand-rosegold_light text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(183,110,121,0.4)] hover:shadow-[0_15px_40px_rgba(183,110,121,0.6)] transition-all duration-300 font-serif hide-view border border-white/20 hover:-translate-y-0.5">
+                        為他抽取專屬獎項
+                    </button>
+
+                    <button type="button" id="btn-action-next" class="absolute z-10 px-14 py-4 bg-white/90 text-brand-rosegold border-2 border-brand-rosegold/30 rounded-full font-bold tracking-widest text-base shadow-md hover:bg-brand-bg transition-all duration-300 font-serif hide-view flex items-center gap-2 hover:-translate-y-0.5">
+                        <span id="next-btn-text">再抽下一位</span>
+                        <iconify-icon icon="ph:arrow-counter-clockwise-bold" id="next-btn-icon"></iconify-icon>
+                    </button>
+
+                    <button type="button" id="btn-show-results" class="absolute z-10 px-14 py-4 bg-gradient-to-r from-brand-dustyrose to-brand-rosegold text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(158,92,102,0.35)] hover:shadow-[0_15px_40px_rgba(158,92,102,0.5)] transition-all duration-300 font-serif hide-view border border-white/20 hover:-translate-y-0.5">
+                        公佈結果
+                    </button>
+
+                    <div class="romantic-pulse" id="draw-sonar" style="display:none;"></div>
+                </div>
+
+                <button type="button" id="btn-back-setup" class="mt-4 text-brand-text/50 hover:text-brand-rosegold font-serif text-sm md:text-base tracking-widest flex items-center gap-2 transition-colors bg-white/40 px-5 py-2 rounded-full border border-white/50 hover:bg-white/80">
+                    <iconify-icon icon="ph:arrow-left-light"></iconify-icon> 回到設定 (重新開始)
+                </button>
+            </div>
+        </section>
+
+        <section id="results-view" class="w-full max-w-6xl hide-view flex-col">
+            <div class="glass-panel rounded-[2rem] p-6 md:p-10 relative overflow-hidden">
+                <div class="results-scroll-area">
+                    <div class="text-center mb-8">
+                        <div class="font-sans text-brand-rosegold text-sm tracking-[0.3em] mb-2 uppercase font-bold">StoryWed Wedding</div>
+                        <h2 class="text-3xl md:text-5xl font-serif text-gradient font-semibold tracking-tight mb-3">抽獎結果總覽</h2>
+                        <p class="text-brand-text/60 font-serif text-base tracking-widest max-w-2xl mx-auto">以下為本次抽獎完整結果，依照抽出順序整理，方便現場核對與後續統計。</p>
+                    </div>
+
+                    <div id="result-summary" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-white/70 rounded-2xl p-5 border border-white shadow-sm text-center">
+                            <div class="text-xs tracking-[0.25em] text-brand-text/40 mb-2">抽出總筆數</div>
+                            <div id="summary-total-count" class="text-3xl font-serif text-brand-dustyrose font-semibold">0</div>
+                        </div>
+                        <div class="bg-white/70 rounded-2xl p-5 border border-white shadow-sm text-center">
+                            <div class="text-xs tracking-[0.25em] text-brand-text/40 mb-2">有獎項筆數</div>
+                            <div id="summary-prize-count" class="text-3xl font-serif text-brand-dustyrose font-semibold">0</div>
+                        </div>
+                        <div class="bg-white/70 rounded-2xl p-5 border border-white shadow-sm text-center">
+                            <div class="text-xs tracking-[0.25em] text-brand-text/40 mb-2">抽獎模式</div>
+                            <div id="summary-draw-mode" class="text-xl font-serif text-brand-dustyrose font-semibold">隨機抽出</div>
+                        </div>
+                    </div>
+
+                    <div id="results-list" class="space-y-4"></div>
+
+                    <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <button type="button" id="btn-back-draw" class="px-8 py-3 bg-white/90 text-brand-rosegold border-2 border-brand-rosegold/30 rounded-full font-bold tracking-widest text-base shadow-md hover:bg-brand-bg transition-all duration-300 font-serif flex items-center gap-2 hover:-translate-y-0.5">
+                            <iconify-icon icon="ph:arrow-left-bold"></iconify-icon>
+                            返回抽獎畫面
+                        </button>
+
+                        <button type="button" id="btn-results-restart" class="px-8 py-3 bg-gradient-to-r from-brand-rosegold to-brand-rosegold_light text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(183,110,121,0.28)] hover:shadow-[0_15px_40px_rgba(183,110,121,0.45)] transition-all duration-300 font-serif flex items-center gap-2 hover:-translate-y-0.5 border border-white/20">
+                            <iconify-icon icon="ph:arrow-counter-clockwise-bold"></iconify-icon>
+                            回到設定重新開始
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div id="import-modal" class="hide-view fixed inset-0 z-[10000] items-center justify-center p-4 bg-black/35 backdrop-blur-sm">
+            <div class="w-full max-w-2xl bg-white rounded-[1.75rem] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-white/80 p-6 md:p-8">
+                <div class="text-center mb-5">
+                    <div class="font-sans text-brand-rosegold text-xs tracking-[0.3em] mb-2 uppercase font-bold">Import Config</div>
+                    <h3 class="text-2xl md:text-3xl font-serif text-gradient font-semibold">貼上設定代碼</h3>
+                    <p class="mt-2 text-brand-text/60 font-serif text-sm tracking-widest">將先前導出的代碼貼在下方，即可自動還原名字、獎項與抽獎模式。</p>
+                </div>
+
+                <textarea
+                    id="import-code-input"
+                    class="w-full min-h-[180px] rounded-2xl p-5 font-serif text-sm leading-relaxed resize-y shadow-inner"
+                    placeholder="請貼上 STORYWEDCFG: 開頭的設定代碼"
+                ></textarea>
+
+                <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+                    <button type="button" id="confirm-import-btn" class="px-8 py-3 bg-gradient-to-r from-brand-rosegold to-brand-rosegold_light text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(183,110,121,0.28)] hover:shadow-[0_15px_40px_rgba(183,110,121,0.45)] transition-all duration-300 font-serif border border-white/20">
+                        確認導入
+                    </button>
+
+                    <button type="button" id="close-import-modal-btn" class="px-8 py-3 bg-white/90 text-brand-rosegold border-2 border-brand-rosegold/30 rounded-full font-bold tracking-widest text-base shadow-md hover:bg-brand-bg transition-all duration-300 font-serif">
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <button type="button" id="btn-fullscreen" class="absolute bottom-8 right-8 w-14 h-14 bg-white/95 backdrop-blur-md rounded-full flex items-center justify-center text-brand-rosegold hover:bg-brand-rosegold hover:text-white transition-all duration-300 z-[9999] shadow-lg border border-brand-rosegold/15 group cursor-pointer">
+        <iconify-icon icon="ph:corners-out-thin" id="icon-fs" class="text-2xl group-hover:scale-110 transition-transform"></iconify-icon>
+    </button>
+</div>
+
+<script>
+    function initStoryWedLottery() {
+        if (typeof gsap !== 'undefined') {
+            gsap.from(".gs-reveal", {
+                y: 30,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.15,
+                ease: "power3.out",
+                delay: 0.2
+            });
+        }
+
+        const celebrationContainer = document.getElementById('celebration-container');
+        const toastWrap = document.getElementById('toast-wrap');
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-card ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <iconify-icon icon="${type === 'error' ? 'ph:warning-circle-fill' : 'ph:check-circle-fill'}"></iconify-icon>
+                </div>
+                <div>
+                    <div class="toast-title">${type === 'error' ? '提醒' : '已完成'}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+
+            toastWrap.appendChild(toast);
+
+            if (typeof gsap !== 'undefined') {
+                gsap.fromTo(
+                    toast,
+                    { y: 24, opacity: 0, scale: 0.95 },
+                    { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" }
+                );
+            }
+
+            setTimeout(() => {
+                if (typeof gsap !== 'undefined') {
+                    gsap.to(toast, {
+                        y: 16,
+                        opacity: 0,
+                        duration: 0.3,
+                        ease: "power2.in",
+                        onComplete: () => toast.remove()
+                    });
+                } else {
+                    toast.remove();
+                }
+            }, 3200);
+        }
+
+        function shootCelebrationPetals() {
+            for (let i = 0; i < 65; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'absolute pointer-events-none';
+
+                const size = anime.random(15, 25);
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size * anime.random(1, 1.3)}px`;
+                petal.style.background = anime.random(0, 1)
+                    ? 'radial-gradient(circle at 30% 30%, #FFFaf8 0%, #E6B3A3 100%)'
+                    : 'radial-gradient(circle at 30% 30%, #FFFaf8 0%, #B76E79 100%)';
+                petal.style.borderRadius = '70% 30% 80% 20% / 60% 70% 30% 40%';
+                petal.style.left = `${anime.random(-10, 110)}vw`;
+                petal.style.top = `${anime.random(-60, -10)}vh`;
+
+                celebrationContainer.appendChild(petal);
+
+                anime({
+                    targets: petal,
+                    translateY: ['0vh', '150vh'],
+                    translateX: () => `+=${anime.random(-250, 250)}`,
+                    rotateZ: () => anime.random(-720, 720),
+                    rotateX: () => anime.random(-360, 360),
+                    opacity: [
+                        { value: 0, duration: 0 },
+                        { value: 1, duration: 400 },
+                        { value: 1, duration: anime.random(1500, 2500) },
+                        { value: 0, duration: 800 }
+                    ],
+                    duration: () => anime.random(3000, 4500),
+                    delay: () => anime.random(0, 800),
+                    easing: 'easeInSine',
+                    complete: () => petal.remove()
+                });
+            }
+        }
+
+        if (typeof anime !== 'undefined') {
+            const petalsContainer = document.getElementById('petals-container');
+
+            for (let i = 0; i < 40; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                const size = anime.random(8, 18);
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size * anime.random(1, 1.2)}px`;
+                petal.style.left = `${anime.random(0, 100)}vw`;
+                petal.style.top = `${anime.random(-20, 100)}vh`;
+                petalsContainer.appendChild(petal);
+                animatePetal(petal);
+            }
+
+            function animatePetal(el) {
+                const duration = anime.random(8000, 15000);
+                anime({
+                    targets: el,
+                    translateY: [0, `110vh`],
+                    translateX: () => anime.random(-50, 50),
+                    rotateZ: () => anime.random(-180, 180),
+                    rotateX: () => anime.random(0, 360),
+                    opacity: { value: [0, anime.random(0.5, 0.9), 0], duration, easing: 'linear' },
+                    duration,
+                    delay: anime.random(0, 4000),
+                    easing: 'linear',
+                    complete: () => {
+                        el.style.top = `${anime.random(-20, -5)}vh`;
+                        el.style.left = `${anime.random(0, 100)}vw`;
+                        animatePetal(el);
+                    }
+                });
+            }
+        }
+
+        const fsBtn = document.getElementById('btn-fullscreen');
+        const fsIcon = document.getElementById('icon-fs');
+
+        fsBtn.addEventListener('click', () => {
+            const docElm = document.getElementById('storywed-lottery-app');
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                if (docElm.requestFullscreen) docElm.requestFullscreen();
+                else if (docElm.webkitRequestFullscreen) docElm.webkitRequestFullscreen();
+                fsIcon.setAttribute('icon', 'ph:corners-in-thin');
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                fsIcon.setAttribute('icon', 'ph:corners-out-thin');
+            }
+        });
+
+        let namesPool = [];
+        let prizesPool = [];
+        let sequentialPrizeQueue = [];
+        let hasPrizes = false;
+        let originalHasPrizes = false;
+        let currentWinner = "";
+        let currentPrize = "";
+        let currentDrawMode = "random";
+        let shuffleInterval = null;
+        let isRollingName = false;
+        let isRollingPrize = false;
+        let drawResults = [];
+
+        const textarea = document.getElementById('participants-data');
+        const prizesList = document.getElementById('prizes-list');
+
+        const setupView = document.getElementById('setup-view');
+        const drawView = document.getElementById('draw-view');
+        const resultsView = document.getElementById('results-view');
+
+        const headerPoolLeft = document.getElementById('header-pool-left');
+        const headerPrizeStatus = document.getElementById('header-prize-status');
+        const headerPrizeLeft = document.getElementById('header-prize-left');
+        const headerDrawMode = document.getElementById('header-draw-mode');
+        const headerDrawModeText = document.getElementById('header-draw-mode-text');
+
+        const winnerName = document.getElementById('winner-name');
+        const winnerPrize = document.getElementById('winner-prize');
+        const sonar = document.getElementById('draw-sonar');
+
+        const btnName = document.getElementById('btn-action-name');
+        const btnPrize = document.getElementById('btn-action-prize');
+        const btnNext = document.getElementById('btn-action-next');
+        const btnShowResults = document.getElementById('btn-show-results');
+        const nextBtnText = document.getElementById('next-btn-text');
+        const nextBtnIcon = document.getElementById('next-btn-icon');
+
+        const resultsList = document.getElementById('results-list');
+        const summaryTotalCount = document.getElementById('summary-total-count');
+        const summaryPrizeCount = document.getElementById('summary-prize-count');
+        const summaryDrawMode = document.getElementById('summary-draw-mode');
+
+        const importModal = document.getElementById('import-modal');
+        const importCodeInput = document.getElementById('import-code-input');
+        const confirmImportBtn = document.getElementById('confirm-import-btn');
+        const closeImportModalBtn = document.getElementById('close-import-modal-btn');
+        const openImportBtn = document.getElementById('btn-import-config');
+
+        function getSelectedMode() {
+            const checked = document.querySelector('input[name="draw-mode"]:checked');
+            return checked ? checked.value : 'random';
+        }
+
+        function setSelectedMode(mode) {
+            const target = document.querySelector(`input[name="draw-mode"][value="${mode}"]`);
+            if (target) target.checked = true;
+        }
+
+        function getModeLabel(mode) {
+            return mode === 'sequential' ? '依序抽出' : '隨機抽出';
+        }
+
+        function resetRollingState() {
+            if (shuffleInterval) clearInterval(shuffleInterval);
+            shuffleInterval = null;
+            isRollingName = false;
+            isRollingPrize = false;
+            sonar.style.display = 'none';
+        }
+
+        function showPrizeText(text, withStars = false) {
+            winnerPrize.classList.remove('hidden');
+            winnerPrize.classList.add('flex');
+            winnerPrize.style.opacity = '1';
+            winnerPrize.style.transform = 'translateY(0)';
+            winnerPrize.style.color = '#9E5C66';
+
+            if (withStars) {
+                winnerPrize.innerHTML = `<iconify-icon icon="ph:star-fill" class="text-xl"></iconify-icon> ${text} <iconify-icon icon="ph:star-fill" class="text-xl"></iconify-icon>`;
+            } else {
+                winnerPrize.textContent = text;
+            }
+        }
+
+        function hidePrizeText() {
+            winnerPrize.classList.add('hidden');
+            winnerPrize.classList.remove('flex');
+            winnerPrize.style.opacity = '0';
+            winnerPrize.style.transform = 'translateY(16px)';
+            winnerPrize.textContent = '';
+            winnerPrize.innerHTML = '';
+        }
+
+        function updateHeaderStatus() {
+            headerPoolLeft.textContent = namesPool.length;
+
+            if (hasPrizes) {
+                headerPrizeStatus.classList.remove('hide-view');
+                headerPrizeLeft.textContent = currentDrawMode === 'sequential' ? sequentialPrizeQueue.length : prizesPool.length;
+                headerDrawMode.classList.remove('hide-view');
+                headerDrawModeText.textContent = getModeLabel(currentDrawMode);
+            } else {
+                headerPrizeStatus.classList.add('hide-view');
+                headerDrawMode.classList.add('hide-view');
+            }
+        }
+
+        function pushDrawResult(winner, prize) {
+            drawResults.push({
+                order: drawResults.length + 1,
+                prizeName: prize || '',
+                winnerName: winner || '—'
+            });
+        }
+
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderResultsView() {
+            const shouldShowPrizeColumn = originalHasPrizes;
+
+            summaryTotalCount.textContent = drawResults.length;
+            summaryPrizeCount.textContent = drawResults.filter(item => item.prizeName && item.prizeName !== '').length;
+            summaryDrawMode.textContent = getModeLabel(currentDrawMode);
+
+            if (drawResults.length === 0) {
+                resultsList.innerHTML = `
+                    <div class="empty-result-box text-center font-serif">
+                        目前尚無抽獎結果。
+                    </div>
+                `;
+                return;
+            }
+
+            if (shouldShowPrizeColumn) {
+                resultsList.innerHTML = drawResults.map(item => `
+                    <div class="result-card flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+                        <div class="result-order-badge">${item.order}</div>
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
+                            <div>
+                                <div class="result-label">獎項名稱</div>
+                                <div class="result-value">${escapeHTML(item.prizeName || '—')}</div>
+                            </div>
+                            <div>
+                                <div class="result-label">獎項內容 / 得獎者</div>
+                                <div class="result-value">${escapeHTML(item.winnerName)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                resultsList.innerHTML = drawResults.map(item => `
+                    <div class="result-card flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+                        <div class="result-order-badge">${item.order}</div>
+                        <div class="flex-1 w-full">
+                            <div class="result-label">得獎者</div>
+                            <div class="result-value">${escapeHTML(item.winnerName)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function switchView(fromView, toView) {
+            const tl = gsap.timeline();
+            tl.to(fromView, {
+                opacity: 0,
+                scale: 0.97,
+                duration: 0.3,
+                ease: "power2.in"
+            })
+            .call(() => {
+                fromView.classList.add('hide-view');
+                toView.classList.remove('hide-view');
+                toView.style.display = 'flex';
+                if (toView === resultsView) {
+                    toView.style.flexDirection = 'column';
+                }
+            })
+            .fromTo(
+                toView,
+                { opacity: 0, scale: 0.97 },
+                { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }
+            );
+        }
+
+        function updateParticipantCountDisplay() {
+            const count = textarea.value.split('\n').filter(l => l.trim() !== '').length;
+            document.getElementById('participant-count').textContent = count;
+            headerPoolLeft.textContent = count;
+        }
+
+        function getPrizeRowsData() {
+            const rows = prizesList.querySelectorAll('.prize-row');
+            const prizes = [];
+
+            rows.forEach(row => {
+                const name = row.querySelector('.prize-name').value.trim();
+                const count = Math.max(1, parseInt(row.querySelector('.prize-count').value, 10) || 1);
+                if (name) {
+                    prizes.push({ name, count });
+                }
+            });
+
+            return prizes;
+        }
+
+        function createPrizeRow(name = '', count = 1) {
+            const row = document.createElement('div');
+            row.className = 'prize-row flex gap-2 items-center group bg-white/60 p-2.5 rounded-xl border border-white shadow-sm flex-wrap sm:flex-nowrap transition-all hover:shadow-md hover:bg-white';
+            row.innerHTML = `
+                <input type="text" class="prize-name flex-grow min-w-[120px] rounded-lg px-3 py-2 text-sm font-serif border-none bg-white/80 focus:bg-white" placeholder="獎項名稱 (例: 浪漫雙人餐券)" value="${escapeHTML(name)}">
+                <span class="text-brand-text/50 text-xs font-sans whitespace-nowrap">數量</span>
+                <input type="number" min="1" class="prize-count w-16 rounded-lg px-2 py-2 text-sm font-serif text-center border-none bg-white/80 focus:bg-white" value="${count}">
+                <button type="button" class="remove-prize-btn text-brand-text/30 hover:text-red-400 transition-colors p-2" title="刪除">
+                    <iconify-icon icon="ph:trash-light" class="text-lg"></iconify-icon>
+                </button>
+            `;
+            return row;
+        }
+
+        function renderPrizeRows(prizes = []) {
+            prizesList.innerHTML = '';
+
+            if (!prizes.length) {
+                prizesList.appendChild(createPrizeRow('', 1));
+                return;
+            }
+
+            prizes.forEach(item => {
+                prizesList.appendChild(createPrizeRow(item.name, item.count));
+            });
+        }
+
+        function encodeConfig(data) {
+            const json = JSON.stringify(data);
+            return 'STORYWEDCFG:' + btoa(unescape(encodeURIComponent(json)));
+        }
+
+        function decodeConfig(code) {
+            const cleaned = String(code || '').trim();
+            if (!cleaned.startsWith('STORYWEDCFG:')) {
+                throw new Error('格式錯誤');
+            }
+            const base64 = cleaned.replace('STORYWEDCFG:', '');
+            const json = decodeURIComponent(escape(atob(base64)));
+            return JSON.parse(json);
+        }
+
+        async function copyText(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+                return true;
+            }
+
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            temp.style.position = 'fixed';
+            temp.style.opacity = '0';
+            temp.style.left = '-9999px';
+            document.body.appendChild(temp);
+            temp.focus();
+            temp.select();
+            const success = document.execCommand('copy');
+            document.body.removeChild(temp);
+            return success;
+        }
+
+        function openImportModal() {
+            importCodeInput.value = '';
+            importModal.classList.remove('hide-view');
+            importModal.classList.add('show');
+            setTimeout(() => importCodeInput.focus(), 50);
+        }
+
+        function closeImportModal() {
+            importModal.classList.remove('show');
+            importModal.classList.add('hide-view');
+        }
+
+        function importConfigFromCode(pasted) {
+            const data = decodeConfig(pasted);
+
+            if (!data || !Array.isArray(data.names) || !Array.isArray(data.prizes)) {
+                throw new Error('資料內容不完整');
+            }
+
+            textarea.value = data.names.join('\n');
+            updateParticipantCountDisplay();
+
+            setSelectedMode(data.drawMode === 'sequential' ? 'sequential' : 'random');
+
+            const safePrizes = data.prizes
+                .map(item => ({
+                    name: String(item.name || '').trim(),
+                    count: Math.max(1, parseInt(item.count, 10) || 1)
+                }))
+                .filter(item => item.name);
+
+            renderPrizeRows(safePrizes);
+        }
+
+        textarea.addEventListener('input', updateParticipantCountDisplay);
+
+        document.getElementById('add-prize-btn').addEventListener('click', () => {
+            prizesList.appendChild(createPrizeRow('', 1));
+        });
+
+        prizesList.addEventListener('click', (e) => {
+            const btn = e.target.closest('.remove-prize-btn');
+            if (btn) {
+                btn.closest('.prize-row').remove();
+
+                if (!prizesList.querySelector('.prize-row')) {
+                    prizesList.appendChild(createPrizeRow('', 1));
+                }
+            }
+        });
+
+        document.getElementById('btn-export-config').addEventListener('click', async () => {
+            const names = textarea.value.split('\n').map(n => n.trim()).filter(Boolean);
+            const prizes = getPrizeRowsData();
+            const drawMode = getSelectedMode();
+
+            const payload = {
+                version: 1,
+                drawMode,
+                names,
+                prizes
+            };
+
+            try {
+                const code = encodeConfig(payload);
+                const copied = await copyText(code);
+
+                if (!copied) {
+                    throw new Error('copy failed');
+                }
+
+                showToast('已複製代碼，請保存於記事本中，使用時僅需一鍵導入貼上即可');
+            } catch (error) {
+                showToast('導出失敗，請稍後再試。', 'error');
+            }
+        });
+
+        openImportBtn.addEventListener('click', () => {
+            openImportModal();
+        });
+
+        closeImportModalBtn.addEventListener('click', () => {
+            closeImportModal();
+        });
+
+        importModal.addEventListener('click', (e) => {
+            if (e.target === importModal) {
+                closeImportModal();
+            }
+        });
+
+        confirmImportBtn.addEventListener('click', () => {
+            const pasted = importCodeInput.value.trim();
+            if (!pasted) {
+                showToast('請先貼上設定代碼。', 'error');
+                return;
+            }
+
+            try {
+                importConfigFromCode(pasted);
+                closeImportModal();
+                showToast('設定已成功導入並還原。');
+            } catch (error) {
+                showToast('導入失敗，請確認代碼是否正確。', 'error');
+            }
+        });
+
+        document.getElementById('go-to-draw-btn').addEventListener('click', () => {
+            const rawNames = textarea.value.split('\n').map(n => n.trim()).filter(n => n !== '');
+            if (rawNames.length === 0) {
+                showToast('請至少輸入一位參加賓客喔！', 'error');
+                return;
+            }
+
+            currentDrawMode = getSelectedMode();
+            namesPool = [...rawNames];
+            prizesPool = [];
+            sequentialPrizeQueue = [];
+            drawResults = [];
+
+            const prizeRowsData = getPrizeRowsData();
+            prizeRowsData.forEach(item => {
+                for (let i = 0; i < item.count; i++) {
+                    prizesPool.push(item.name);
+                    sequentialPrizeQueue.push(item.name);
+                }
+            });
+
+            hasPrizes = prizesPool.length > 0;
+            originalHasPrizes = hasPrizes;
+
+            if (hasPrizes && namesPool.length < prizesPool.length) {
+                showToast('目前的賓客名單少於總獎項數，請先增加名單。', 'error');
+                return;
+            }
+
+            currentWinner = '';
+            currentPrize = '';
+            initDrawStage();
+
+            const tl = gsap.timeline();
+            tl.to(setupView, { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" })
+              .call(() => {
+                  setupView.classList.add('hide-view');
+                  drawView.classList.remove('hide-view');
+                  drawView.style.display = 'flex';
+              })
+              .fromTo(drawView, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" });
+        });
+
+        document.getElementById('btn-back-setup').addEventListener('click', () => {
+            resetRollingState();
+
+            if (!resultsView.classList.contains('hide-view')) {
+                switchView(resultsView, setupView);
+                return;
+            }
+
+            const tl = gsap.timeline();
+            tl.to(drawView, { opacity: 0, scale: 0.95, duration: 0.3, ease: "power2.in" })
+              .call(() => {
+                  drawView.classList.add('hide-view');
+                  setupView.classList.remove('hide-view');
+              })
+              .to(setupView, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" });
+        });
+
+        function initDrawStage() {
+            resetRollingState();
+            updateHeaderStatus();
+
+            winnerName.innerHTML = `<iconify-icon icon="ph:gift-light" class="text-brand-rosegold animate-pulse text-8xl md:text-9xl"></iconify-icon>`;
+            winnerName.style.color = '#4A3B32';
+
+            hidePrizeText();
+
+            btnName.classList.remove('hide-view');
+            btnName.disabled = false;
+            btnName.classList.remove('opacity-60', 'cursor-not-allowed');
+
+            btnPrize.classList.add('hide-view');
+            btnPrize.disabled = false;
+            btnPrize.classList.remove('opacity-60', 'cursor-not-allowed');
+
+            btnNext.classList.add('hide-view');
+            btnNext.disabled = false;
+            btnNext.classList.remove('opacity-70', 'cursor-not-allowed');
+
+            btnShowResults.classList.add('hide-view');
+
+            nextBtnText.textContent = "再抽下一位";
+            nextBtnIcon.setAttribute('icon', 'ph:arrow-counter-clockwise-bold');
+            nextBtnIcon.style.display = 'inline-block';
+
+            currentWinner = '';
+            currentPrize = '';
+
+            if (hasPrizes && currentDrawMode === 'sequential') {
+                btnName.textContent = "公布本輪獎項";
+            } else {
+                btnName.textContent = "抽取幸運兒";
+            }
+        }
+
+        function checkAndShowNext() {
+            const namesDone = namesPool.length === 0;
+            const prizesDone = !hasPrizes || (currentDrawMode === 'sequential' ? sequentialPrizeQueue.length === 0 : prizesPool.length === 0);
+
+            if (namesDone && prizesDone) {
+                btnNext.classList.add('hide-view');
+                btnShowResults.classList.remove('hide-view');
+                return;
+            }
+
+            btnShowResults.classList.add('hide-view');
+            btnNext.classList.remove('hide-view');
+            nextBtnText.textContent = "再抽下一位";
+            nextBtnIcon.style.display = 'inline-block';
+            btnNext.disabled = false;
+            btnNext.classList.remove('opacity-70', 'cursor-not-allowed');
+        }
+
+        function finalizeWinnerSelection() {
+            const winIdx = Math.floor(Math.random() * namesPool.length);
+            currentWinner = namesPool[winIdx];
+            namesPool.splice(winIdx, 1);
+            updateHeaderStatus();
+
+            winnerName.textContent = currentWinner;
+            winnerName.style.color = '#9E5C66';
+
+            gsap.fromTo(winnerName, { scale: 1.2, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(2)" });
+        }
+
+        btnName.addEventListener('click', () => {
+            if (namesPool.length === 0) {
+                showToast('名單已全數抽完囉！', 'error');
+                return;
+            }
+
+            if (hasPrizes && currentDrawMode === 'sequential') {
+                if (sequentialPrizeQueue.length === 0) {
+                    checkAndShowNext();
+                    return;
+                }
+
+                if (!isRollingPrize) {
+                    isRollingPrize = true;
+                    btnName.textContent = "停！(STOP)";
+                    sonar.style.display = 'block';
+                    winnerName.style.color = '#B76E79';
+                    winnerName.textContent = '獎項揭曉中';
+
+                    hidePrizeText();
+                    showPrizeText(sequentialPrizeQueue[Math.floor(Math.random() * sequentialPrizeQueue.length)], false);
+                    winnerPrize.style.color = '#B76E79';
+
+                    shuffleInterval = setInterval(() => {
+                        winnerPrize.textContent = sequentialPrizeQueue[Math.floor(Math.random() * sequentialPrizeQueue.length)];
+                    }, 40);
+                } else {
+                    isRollingPrize = false;
+                    clearInterval(shuffleInterval);
+                    sonar.style.display = 'none';
+
+                    currentPrize = sequentialPrizeQueue.shift();
+                    updateHeaderStatus();
+
+                    winnerName.textContent = "本輪獎項";
+                    winnerName.style.color = '#B76E79';
+                    showPrizeText(currentPrize, true);
+
+                    gsap.fromTo(winnerPrize, { scale: 1.1, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.5)" });
+
+                    btnName.classList.add('hide-view');
+                    btnPrize.classList.remove('hide-view');
+                    btnPrize.textContent = "抽出此獎項得主";
+                }
+
+                return;
+            }
+
+            if (!isRollingName) {
+                isRollingName = true;
+                btnName.textContent = "停！(STOP)";
+                sonar.style.display = 'block';
+                winnerName.style.color = '#B76E79';
+
+                shuffleInterval = setInterval(() => {
+                    winnerName.textContent = namesPool[Math.floor(Math.random() * namesPool.length)];
+                }, 40);
+            } else {
+                isRollingName = false;
+                clearInterval(shuffleInterval);
+                sonar.style.display = 'none';
+
+                finalizeWinnerSelection();
+
+                btnName.classList.add('hide-view');
+
+                if (hasPrizes) {
+                    btnPrize.classList.remove('hide-view');
+                    btnPrize.textContent = "為他抽取專屬獎項";
+                } else {
+                    currentPrize = '';
+                    pushDrawResult(currentWinner, currentPrize);
+                    shootCelebrationPetals();
+                    checkAndShowNext();
+                }
+            }
+        });
+
+        btnPrize.addEventListener('click', () => {
+            if (currentDrawMode === 'sequential' && hasPrizes) {
+                if (namesPool.length === 0) {
+                    showToast('名單已全數抽完囉！', 'error');
+                    return;
+                }
+
+                if (!isRollingName) {
+                    isRollingName = true;
+                    btnPrize.textContent = "停！(STOP)";
+                    sonar.style.display = 'block';
+                    winnerName.style.color = '#B76E79';
+
+                    shuffleInterval = setInterval(() => {
+                        winnerName.textContent = namesPool[Math.floor(Math.random() * namesPool.length)];
+                    }, 40);
+                } else {
+                    isRollingName = false;
+                    clearInterval(shuffleInterval);
+                    sonar.style.display = 'none';
+
+                    finalizeWinnerSelection();
+                    pushDrawResult(currentWinner, currentPrize);
+                    shootCelebrationPetals();
+
+                    btnPrize.classList.add('hide-view');
+                    checkAndShowNext();
+                }
+                return;
+            }
+
+            if (prizesPool.length === 0) {
+                btnPrize.classList.add('hide-view');
+                checkAndShowNext();
+                return;
+            }
+
+            if (!isRollingPrize) {
+                isRollingPrize = true;
+                btnPrize.textContent = "停！(STOP)";
+                sonar.style.display = 'block';
+
+                winnerPrize.classList.remove('hidden');
+                winnerPrize.classList.add('flex');
+                winnerPrize.style.opacity = '1';
+                winnerPrize.style.transform = 'translateY(0)';
+                winnerPrize.style.color = '#B76E79';
+
+                shuffleInterval = setInterval(() => {
+                    winnerPrize.textContent = prizesPool[Math.floor(Math.random() * prizesPool.length)];
+                }, 40);
+            } else {
+                isRollingPrize = false;
+                clearInterval(shuffleInterval);
+                sonar.style.display = 'none';
+
+                const pIdx = Math.floor(Math.random() * prizesPool.length);
+                const finalPrize = prizesPool[pIdx];
+                prizesPool.splice(pIdx, 1);
+                updateHeaderStatus();
+
+                currentPrize = finalPrize;
+                showPrizeText(finalPrize, true);
+                pushDrawResult(currentWinner, currentPrize);
+
+                gsap.fromTo(winnerPrize, { scale: 1.1, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.5)" });
+
+                shootCelebrationPetals();
+                btnPrize.classList.add('hide-view');
+                checkAndShowNext();
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (btnNext.disabled) return;
+
+            const tl = gsap.timeline();
+            tl.to([winnerName, winnerPrize], { opacity: 0, scale: 0.9, duration: 0.3 })
+              .call(() => {
+                  if (hasPrizes) {
+                      if (currentDrawMode === 'sequential' && sequentialPrizeQueue.length === 0 && namesPool.length > 0) {
+                          hasPrizes = false;
+                      }
+                      if (currentDrawMode === 'random' && prizesPool.length === 0 && namesPool.length > 0) {
+                          hasPrizes = false;
+                      }
+                  }
+                  initDrawStage();
+              })
+              .to(winnerName, { opacity: 1, scale: 1, duration: 0.4 });
+        });
+
+        btnShowResults.addEventListener('click', () => {
+            renderResultsView();
+            switchView(drawView, resultsView);
+        });
+
+        document.getElementById('btn-back-draw').addEventListener('click', () => {
+            switchView(resultsView, drawView);
+        });
+
+        document.getElementById('btn-results-restart').addEventListener('click', () => {
+            switchView(resultsView, setupView);
+        });
+
+        renderPrizeRows([]);
+        updateParticipantCountDisplay();
+    }
+
+    // 將啟動時機改為更安全的作法，避免 CMS 後台非同步載入導致失效
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initStoryWedLottery);
+    } else {
+        initStoryWedLottery();
+    }
+</script>
