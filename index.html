@@ -36,6 +36,11 @@
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.9);
             --glass-shadow: rgba(183, 110, 121, 0.1);
+            --scroll-track: rgba(230, 179, 163, 0.22);
+            --scroll-thumb: rgba(183, 110, 121, 0.42);
+            --brand-rosegold: #B76E79;
+            --brand-rosegold_light: #E6B3A3;
+            --brand-dustyrose: #9E5C66;
         }
 
         #storywed-lottery-app {
@@ -45,15 +50,24 @@
             color: #4A3B32; font-family: 'Noto Serif TC', serif; position: relative;
         }
 
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.4); border-radius: 10px; margin: 4px 0; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(183, 110, 121, 0.35); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(183, 110, 121, 0.6); }
+        .custom-scrollbar::-webkit-scrollbar,
+        textarea::-webkit-scrollbar,
+        .prize-picker-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track,
+        textarea::-webkit-scrollbar-track,
+        .prize-picker-scroll::-webkit-scrollbar-track { background: var(--scroll-track); border-radius: 10px; margin: 4px 0; }
+        .custom-scrollbar::-webkit-scrollbar-thumb,
+        textarea::-webkit-scrollbar-thumb,
+        .prize-picker-scroll::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--brand-rosegold_light) 0%, var(--brand-rosegold) 100%); border-radius: 10px; border: 1px solid rgba(255,255,255,0.5); }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover,
+        textarea::-webkit-scrollbar-thumb:hover,
+        .prize-picker-scroll::-webkit-scrollbar-thumb:hover { background: var(--brand-dustyrose); }
 
         .petals-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .petal { position: absolute; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95) 0%, rgba(248,232,235,0.85) 100%); border-radius: 70% 30% 80% 20% / 60% 70% 30% 40%; filter: blur(0.5px); opacity: 0; }
         .glass-panel { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); box-shadow: 0 12px 45px var(--glass-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.6); }
         .text-gradient { background: linear-gradient(135deg, #B76E79 0%, #D4AF37 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        
         .romantic-pulse { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; transform: translate(-50%, -50%); border-radius: 9999px; background: radial-gradient(circle, transparent 30%, rgba(183, 110, 121, 0.25) 70%, transparent 100%); z-index: -1; animation: softPulse 2.8s ease-in-out infinite; }
         @keyframes softPulse { 0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; } 50% { transform: translate(-50%, -50%) scale(1.45); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; } }
         @keyframes auraPulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } 50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; } }
@@ -83,16 +97,75 @@
         .utility-button { background: rgba(255,255,255,0.72); border: 1px solid rgba(183,110,121,0.18); color: #9E5C66; border-radius: 9999px; padding: 0.8rem 1.2rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem; font-size: 0.95rem; letter-spacing: 0.08em; transition: all 0.28s ease; box-shadow: 0 8px 20px rgba(183,110,121,0.06); }
         .utility-button:hover { transform: translateY(-2px); background: rgba(255,255,255,0.92); box-shadow: 0 12px 26px rgba(183,110,121,0.12); }
 
-        #import-modal { display: none; }
-        #import-modal.show { display: flex !important; }
-        .toast-wrap { position: fixed; right: 20px; bottom: 24px; z-index: 10020; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast-card { min-width: 280px; max-width: 420px; background: rgba(255,255,255,0.94); border: 1px solid rgba(183,110,121,0.18); box-shadow: 0 18px 40px rgba(183,110,121,0.18); border-radius: 20px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; pointer-events: auto; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .mapping-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 14px; padding: 16px; background: rgba(255,255,255,.6); border-radius: 20px; border: 1px solid rgba(183,110,121,.15); }
+        .mapping-item { display: flex; flex-direction: column; gap: 8px; background: #fff; padding: 12px; border-radius: 16px; box-shadow: 0 4px 12px rgba(183,110,121,.08); }
+        .mapping-item .name-text { font-size: 15px; font-weight: 700; color: #9E5C66; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+        .prize-mapping-btn { width: 100%; font-size: 14px; font-family: inherit; background: #fff; border: 1px solid rgba(183,110,121,.3); border-radius: 10px; padding: 8px 10px; cursor: pointer; transition: .2s; color: #4A3B32; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .prize-mapping-btn:hover { background: rgba(255,255,255,1); border-color: #B76E79; box-shadow: 0 4px 10px rgba(183,110,121,.15); transform: translateY(-2px); }
+        .prize-mapping-btn.has-value { background: linear-gradient(135deg, rgba(255,250,248,1) 0%, rgba(248,232,232,1) 100%); border-color: #E6B3A3; color: #B76E79; }
+        
+        .prize-list-btn { display: block; width: 100%; text-align: left; padding: 14px 18px; border: 1px solid rgba(183,110,121,.15); background: rgba(255,255,255,.8); border-radius: 14px; font-size: 16px; font-weight: 600; color: #4A3B32; margin-bottom: 10px; cursor: pointer; transition: .2s; font-family: inherit; }
+        .prize-list-btn:hover:not(:disabled) { background: #fff; border-color: #B76E79; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(183,110,121,.1); }
+        .prize-list-btn.selected { background: linear-gradient(135deg, #B76E79 0%, #E6B3A3 100%); color: #fff; border-color: transparent; box-shadow: 0 8px 20px rgba(183,110,121,.24); }
+        .prize-list-btn:disabled { opacity: 0.45; cursor: not-allowed; background: rgba(255,255,255,.4); transform: none; box-shadow: none; }
+
+        .modal { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,.35); backdrop-filter: blur(4px); }
+        .modal.show { display: flex !important; }
+        .modal-card { width: min(760px, 100%); background: #fff; border-radius: 28px; border: 1px solid rgba(255,255,255,.95); box-shadow: 0 24px 60px rgba(0,0,0,.18); padding: 28px; }
+
+        .toast-card { min-width: 280px; max-width: 420px; background: rgba(255,255,255,0.94); border: 1px solid rgba(183,110,121,0.18); box-shadow: 0 18px 40px rgba(183,110,121,0.18); border-radius: 20px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; pointer-events: auto; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: fixed; right: 20px; bottom: 24px; z-index: 10020; }
         .toast-card.success { border-color: rgba(183,110,121,0.22); }
         .toast-card.error { border-color: rgba(220,38,38,0.2); }
         .toast-icon { width: 34px; height: 34px; min-width: 34px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #B76E79 0%, #E6B3A3 100%); color: white; font-size: 18px; margin-top: 2px; }
         .toast-card.error .toast-icon { background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%); }
         .toast-title { color: #9E5C66; font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.3rem; font-family: "Cormorant Garamond", sans-serif; font-weight: 700; }
         .toast-message { color: #4A3B32; font-size: 0.95rem; line-height: 1.65; }
+
+        .slot-window {
+            height: 90px;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+        }
+        @media(min-width: 768px) {
+            .slot-window { height: 130px; }
+        }
+        .slot-wheel {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            will-change: transform;
+        }
+        .slot-item {
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 100%;
+        }
+        @media(min-width: 768px) {
+            .slot-item { height: 130px; }
+        }
+        .slot-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 10px;
+            color: #4A3B32;
+            font-weight: bold;
+            font-family: 'Noto Serif TC', serif;
+        }
+        .slot-text.highlight {
+            color: #B76E79;
+        }
+        .draw-divider-line {
+            width: 1px;
+            height: 60px;
+            background: rgba(183, 110, 121, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -100,8 +173,7 @@
 <div id="storywed-lottery-app" class="antialiased selection:bg-brand-rosegold selection:text-white">
     <div id="celebration-container" class="absolute top-0 left-0 w-full h-full pointer-events-none z-[9999] overflow-hidden"></div>
     <div class="petals-overlay" id="petals-container"></div>
-    <div id="toast-wrap" class="toast-wrap"></div>
-
+    
     <header class="w-full z-50 p-5 md:p-6 flex justify-between items-center shrink-0 pointer-events-none relative">
         <div class="font-sans text-brand-rosegold text-xl md:text-2xl tracking-[0.3em] uppercase font-bold pointer-events-auto">StoryWed</div>
         <div class="flex gap-3 md:gap-4 pointer-events-auto flex-wrap justify-end">
@@ -110,10 +182,10 @@
                 <span id="header-draw-mode-text">隨機抽出</span>
             </div>
             <div class="font-sans text-brand-text/80 text-sm tracking-widest bg-white/70 px-4 py-2 md:px-5 md:py-2.5 rounded-full border border-white/80 shadow-sm backdrop-blur-lg">
-                賓客：<span id="header-pool-left" class="font-bold text-brand-rosegold text-base">0</span>
+                剩餘賓客：<span id="header-pool-left" class="font-bold text-brand-rosegold text-base">0</span>
             </div>
             <div id="header-prize-status" class="font-sans text-brand-text/80 text-sm tracking-widest bg-white/70 px-4 py-2 md:px-5 md:py-2.5 rounded-full border border-white/80 shadow-sm backdrop-blur-lg hide-view">
-                獎項：<span id="header-prize-left" class="font-bold text-brand-dustyrose text-base">0</span>
+                剩餘獎項：<span id="header-prize-left" class="font-bold text-brand-dustyrose text-base">0</span>
             </div>
         </div>
     </header>
@@ -134,14 +206,14 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <label class="draw-mode-card"><input type="radio" name="draw-mode" value="random" checked><span class="draw-mode-indicator"></span><div class="draw-mode-title">隨機抽出</div><div class="draw-mode-desc">維持目前模式，先抽出得獎名字，再從獎項池中隨機抽出對應獎項。</div></label>
-                        <label class="draw-mode-card"><input type="radio" name="draw-mode" value="sequential"><span class="draw-mode-indicator"></span><div class="draw-mode-title">依序抽出（由上往下）</div><div class="draw-mode-desc">先依照獎項列表順序公布本輪獎項，再從賓客名單中隨機抽出該獎項得主。</div></label>
+                        <label class="draw-mode-card"><input type="radio" name="draw-mode" value="sequential"><span class="draw-mode-indicator"></span><div class="draw-mode-title">依序抽出（由上往下）</div><div class="draw-mode-desc">先依照獎項列表順序公佈本輪獎項，再從賓客名單中隨機抽出該獎項得主。</div></label>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
                     <div class="gs-reveal flex flex-col h-[320px]">
                         <label class="font-serif text-sm tracking-widest text-brand-text mb-3 flex items-center gap-2 font-semibold shrink-0">
-                            <iconify-icon icon="ph:users-three-light" class="text-xl text-brand-rosegold"></iconify-icon> 參加賓客名單 (每行一位)
+                            <iconify-icon icon="ph:users-three-light" class="text-xl text-brand-rosegold"></iconify-icon> 參加賓客名單（每行一位）
                         </label>
                         <div class="relative flex-1 group">
                             <textarea id="participants-data" class="w-full h-full rounded-2xl p-5 font-serif text-base leading-relaxed resize-none shadow-inner custom-scrollbar" placeholder="例如：&#10;Nicole&#10;Annie&#10;李小明..."></textarea>
@@ -151,15 +223,32 @@
 
                     <div class="gs-reveal flex flex-col h-[320px]">
                         <div class="flex justify-between items-end mb-3 shrink-0">
-                            <label class="font-serif text-sm tracking-widest text-brand-text flex items-center gap-2 font-semibold"><iconify-icon icon="ph:gift-light" class="text-xl text-brand-rosegold"></iconify-icon> 獎項池 (選填)</label>
+                            <label class="font-serif text-sm tracking-widest text-brand-text flex items-center gap-2 font-semibold"><iconify-icon icon="ph:gift-light" class="text-xl text-brand-rosegold"></iconify-icon> 獎項池（選填）</label>
                             <button type="button" id="add-prize-btn" class="text-sm font-serif text-brand-rosegold hover:text-brand-champagne flex items-center gap-1.5 transition-colors bg-white/50 px-3 py-1.5 rounded-full shadow-sm hover:bg-white border border-white"><iconify-icon icon="ph:plus-circle-light" class="text-lg"></iconify-icon> 新增獎項</button>
                         </div>
-                        <div id="prizes-list" class="flex-1 overflow-y-auto pr-2 space-y-3 pb-2 custom-scrollbar">
-                        </div>
+                        <div id="prizes-list" class="flex-1 overflow-y-auto pr-2 space-y-3 pb-2 custom-scrollbar"></div>
                     </div>
                 </div>
 
-                <div class="mt-8 gs-reveal">
+                <div class="mt-8 gs-reveal flex flex-col">
+                    <label class="font-serif text-sm tracking-widest text-brand-text mb-1 flex items-center justify-center gap-2 font-semibold">
+                        <iconify-icon icon="ph:target-light" class="text-xl text-brand-rosegold"></iconify-icon> 內定中獎名單（選填）
+                    </label>
+                    <div class="text-center text-brand-text/60 text-sm mb-2 font-serif">點選名字為該賓客設定特定獎項，預設為隨機分配</div>
+                    <div id="prize-mapping-area" class="mapping-grid"></div>
+                </div>
+
+                <div class="mt-6 gs-reveal flex flex-col">
+                    <label class="font-serif text-sm tracking-widest text-brand-text mb-1 flex items-center justify-center gap-2 font-semibold">
+                        <iconify-icon icon="ph:crown-simple-light" class="text-xl text-brand-rosegold"></iconify-icon> 最後壓軸獎項（選填）
+                    </label>
+                    <div class="text-center text-brand-text/60 text-sm mb-4 font-serif">不管名單順序為何，此獎項將強制安排在「最後一次」抽出</div>
+                    <div class="flex justify-center">
+                       <button type="button" id="btn-set-last-prize" class="prize-mapping-btn" style="max-width:320px; padding: 12px 28px; font-size:16px; border-radius:999px;">🎲 隨機（無指定）</button>
+                    </div>
+                </div>
+
+                <div class="mt-10 gs-reveal">
                     <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
                         <button type="button" id="btn-export-config" class="utility-button font-serif"><iconify-icon icon="ph:upload-simple-light" class="text-lg"></iconify-icon>一鍵導出</button>
                         <button type="button" id="btn-import-config" class="utility-button font-serif"><iconify-icon icon="ph:download-simple-light" class="text-lg"></iconify-icon>一鍵導入</button>
@@ -175,25 +264,40 @@
             </section>
 
             <section id="draw-view" class="w-full max-w-5xl hide-view flex-col items-center justify-center">
-                <div id="draw-stage" class="relative w-full aspect-[4/3] md:aspect-[21/9] glass-panel rounded-[2.5rem] overflow-hidden shadow-[0_15px_50px_rgba(183,110,121,0.15)] border-2 border-white group mb-10">
+                <div id="draw-stage" class="relative w-full aspect-[4/3] md:aspect-[21/9] glass-panel rounded-[2.5rem] overflow-hidden shadow-[0_15px_50px_rgba(183,110,121,0.15)] border-2 border-white mb-10 flex items-center justify-center">
                     <div class="draw-aura-bg"></div>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center z-10 w-full px-6 pointer-events-none transition-all duration-500">
-                        <div id="winner-name" class="text-5xl md:text-7xl font-bold tracking-[0.05em] text-brand-text drop-shadow-sm transition-all duration-300 font-serif w-full text-center whitespace-nowrap text-ellipsis px-4 pt-2 pb-8 leading-[1.4] overflow-visible flex items-center justify-center pointer-events-auto">
-                            <iconify-icon icon="ph:gift-light" class="text-brand-rosegold animate-pulse text-7xl md:text-9xl"></iconify-icon>
+                    
+                    <div id="draw-content-wrapper" class="absolute inset-0 flex flex-row items-center justify-center z-10 w-full px-2 md:px-6">
+                        
+                        <div id="panel-name" class="flex flex-col items-center justify-center flex-1 w-full max-w-[50%]">
+                            <div id="title-name" class="text-brand-rosegold/80 font-serif tracking-widest text-sm md:text-lg mb-2 transition-opacity duration-300 opacity-0">目前抽出的人選</div>
+                            <div class="slot-window">
+                                <div id="wheel-name" class="slot-wheel"></div>
+                            </div>
                         </div>
-                        <div id="winner-prize" class="hidden text-2xl md:text-4xl font-serif text-brand-dustyrose tracking-widest mt-4 md:mt-6 opacity-0 transform translate-y-4 transition-all duration-500 font-semibold drop-shadow-sm items-center justify-center gap-2.5 z-20 pointer-events-none pb-2 leading-normal overflow-visible"></div>
+
+                        <div id="draw-divider" class="mx-2 md:mx-6 transition-opacity duration-300 opacity-0 hidden flex-col items-center">
+                            <div class="draw-divider-line"></div>
+                            <iconify-icon icon="ph:plus-light" class="text-brand-rosegold/50 my-2 text-xl"></iconify-icon>
+                            <div class="draw-divider-line"></div>
+                        </div>
+
+                        <div id="panel-prize" class="flex flex-col items-center justify-center flex-1 w-full max-w-[50%] hidden">
+                            <div id="title-prize" class="text-brand-rosegold/80 font-serif tracking-widest text-sm md:text-lg mb-2 transition-opacity duration-300 opacity-0">為他抽出的獎項內容</div>
+                            <div class="slot-window">
+                                <div id="wheel-prize" class="slot-wheel"></div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="flex flex-col items-center gap-6 relative z-10 w-full max-w-md">
                     <div class="relative w-full flex justify-center h-16 items-center">
-                        <button type="button" id="btn-action-name" class="z-10 px-14 py-4 bg-gradient-to-r from-brand-rosegold to-brand-rosegold_light text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(183,110,121,0.4)] hover:shadow-[0_15px_40px_rgba(183,110,121,0.6)] transition-all duration-300 font-serif border border-white/20 hover:-translate-y-0.5">抽取幸運兒</button>
-                        <button type="button" id="btn-action-prize" class="z-10 px-14 py-4 bg-gradient-to-r from-brand-rosegold to-brand-rosegold_light text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(183,110,121,0.4)] hover:shadow-[0_15px_40px_rgba(183,110,121,0.6)] transition-all duration-300 font-serif hide-view border border-white/20 hover:-translate-y-0.5">為他抽取專屬獎項</button>
-                        <button type="button" id="btn-action-next" class="z-10 px-14 py-4 bg-white/90 text-brand-rosegold border-2 border-brand-rosegold/30 rounded-full font-bold tracking-widest text-base shadow-md hover:bg-brand-bg transition-all duration-300 font-serif hide-view flex items-center gap-2 hover:-translate-y-0.5"><span id="next-btn-text">再抽下一位</span><iconify-icon icon="ph:arrow-counter-clockwise-bold" id="next-btn-icon"></iconify-icon></button>
+                        <button type="button" id="btn-action-main" class="z-10 px-14 py-4 bg-gradient-to-r from-brand-rosegold to-brand-rosegold_light text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(183,110,121,0.4)] hover:shadow-[0_15px_40px_rgba(183,110,121,0.6)] transition-all duration-300 font-serif border border-white/20 hover:-translate-y-0.5">抽取幸運兒</button>
                         <button type="button" id="btn-show-results" class="z-10 px-14 py-4 bg-gradient-to-r from-brand-dustyrose to-brand-rosegold text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(158,92,102,0.35)] hover:shadow-[0_15px_40px_rgba(158,92,102,0.5)] transition-all duration-300 font-serif hide-view border border-white/20 hover:-translate-y-0.5">公佈結果</button>
-                        <div class="romantic-pulse" id="draw-sonar" style="display:none;"></div>
                     </div>
-                    <button type="button" id="btn-back-setup" class="mt-4 text-brand-text/50 hover:text-brand-rosegold font-serif text-sm md:text-base tracking-widest flex items-center gap-2 transition-colors bg-white/40 px-5 py-2 rounded-full border border-white/50 hover:bg-white/80"><iconify-icon icon="ph:arrow-left-light"></iconify-icon> 回到設定 (重新開始)</button>
+                    <button type="button" id="btn-back-setup" class="mt-4 text-brand-text/50 hover:text-brand-rosegold font-serif text-sm md:text-base tracking-widest flex items-center gap-2 transition-colors bg-white/40 px-5 py-2 rounded-full border border-white/50 hover:bg-white/80"><iconify-icon icon="ph:arrow-left-light"></iconify-icon> 回到設定（重新開始）</button>
                 </div>
             </section>
 
@@ -216,17 +320,27 @@
         </div>
     </main>
 
-    <div id="import-modal" class="hide-view fixed inset-0 z-[10000] items-center justify-center p-4 bg-black/35 backdrop-blur-sm">
-        <div class="w-full max-w-2xl bg-white rounded-[1.75rem] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-white/80 p-6 md:p-8">
+    <div id="import-modal" class="modal">
+        <div class="modal-card" style="max-width: 600px;">
             <div class="text-center mb-5">
                 <div class="font-sans text-brand-rosegold text-xs tracking-[0.3em] mb-2 uppercase font-bold">Import Config</div>
                 <h3 class="text-2xl md:text-3xl font-serif text-gradient font-semibold">貼上設定代碼</h3>
-                <p class="mt-2 text-brand-text/60 font-serif text-sm tracking-widest">將先前導出的代碼貼在下方，即可自動還原名字、獎項與抽獎模式。</p>
+                <p class="mt-2 text-brand-text/60 font-serif text-sm tracking-widest">將先前導出的代碼貼在下方，即可自動還原設定內容。</p>
             </div>
             <textarea id="import-code-input" class="w-full min-h-[180px] rounded-2xl p-5 font-serif text-sm leading-relaxed resize-y shadow-inner custom-scrollbar" placeholder="請貼上 STORYWEDCFG: 開頭的設定代碼"></textarea>
             <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
                 <button type="button" id="confirm-import-btn" class="px-8 py-3 bg-gradient-to-r from-brand-rosegold to-brand-rosegold_light text-white rounded-full font-bold tracking-widest text-base shadow-[0_10px_30px_rgba(183,110,121,0.28)] hover:shadow-[0_15px_40px_rgba(183,110,121,0.45)] transition-all duration-300 font-serif border border-white/20">確認導入</button>
                 <button type="button" id="close-import-modal-btn" class="px-8 py-3 bg-white/90 text-brand-rosegold border-2 border-brand-rosegold/30 rounded-full font-bold tracking-widest text-base shadow-md hover:bg-brand-bg transition-all duration-300 font-serif">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="prize-modal" class="modal">
+        <div class="modal-card" style="max-width:460px; padding:24px;">
+            <h3 id="prize-modal-title" class="text-2xl md:text-3xl font-serif text-brand-rosegold font-semibold mb-4 text-center">選擇指定獎項</h3>
+            <div id="modal-prize-picker" class="prize-picker-scroll" style="max-height: 360px; overflow-y: auto; padding-right: 8px;"></div>
+            <div class="flex justify-center mt-4">
+                <button type="button" id="close-prize-modal-btn" class="utility-button font-serif">關閉</button>
             </div>
         </div>
     </div>
@@ -238,262 +352,1046 @@
 
 <script>
     function initStoryWedLottery() {
-        if (typeof gsap !== 'undefined') { gsap.from(".gs-reveal", { y: 30, opacity: 0, duration: 1, stagger: 0.15, ease: "power3.out", delay: 0.2 }); }
+        if (typeof gsap !== 'undefined') {
+            gsap.from(".gs-reveal", { y: 30, opacity: 0, duration: 1, stagger: 0.15, ease: "power3.out", delay: 0.2 });
+        }
         
+        const app = document.getElementById('storywed-lottery-app');
         const celebrationContainer = document.getElementById('celebration-container');
-        const toastWrap = document.getElementById('toast-wrap');
+
+        const textarea = document.getElementById('participants-data'),
+              prizesList = document.getElementById('prizes-list'),
+              setupView = document.getElementById('setup-view'),
+              drawView = document.getElementById('draw-view'),
+              resultsView = document.getElementById('results-view');
+              
+        const headerPoolLeft = document.getElementById('header-pool-left'),
+              headerPrizeStatus = document.getElementById('header-prize-status'),
+              headerPrizeLeft = document.getElementById('header-prize-left'),
+              headerDrawMode = document.getElementById('header-draw-mode'),
+              headerDrawModeText = document.getElementById('header-draw-mode-text');
+        
+        const btnMainAction = document.getElementById('btn-action-main'),
+              btnShowResults = document.getElementById('btn-show-results');
+              
+        const resultsList = document.getElementById('results-list'),
+              summaryTotalCount = document.getElementById('summary-total-count'),
+              summaryPrizeCount = document.getElementById('summary-prize-count'),
+              summaryDrawMode = document.getElementById('summary-draw-mode');
+        
+        const importModal = document.getElementById('import-modal'),
+              importCodeInput = document.getElementById('import-code-input'),
+              confirmImportBtn = document.getElementById('confirm-import-btn'),
+              closeImportModalBtn = document.getElementById('close-import-modal-btn'),
+              openImportBtn = document.getElementById('btn-import-config');
+              
+        const prizeModal = document.getElementById('prize-modal'),
+              modalPrizePicker = document.getElementById('modal-prize-picker'),
+              closePrizeModalBtn = document.getElementById('close-prize-modal-btn'),
+              prizeModalTitle = document.getElementById('prize-modal-title');
+              
+        const prizeMappingArea = document.getElementById('prize-mapping-area'),
+              btnSetLastPrize = document.getElementById('btn-set-last-prize');
+
+        const panelName = document.getElementById('panel-name'),
+              titleName = document.getElementById('title-name'),
+              wheelName = document.getElementById('wheel-name');
+              
+        const panelPrize = document.getElementById('panel-prize'),
+              titlePrize = document.getElementById('title-prize'),
+              wheelPrize = document.getElementById('wheel-prize');
+              
+        const drawDivider = document.getElementById('draw-divider');
+
+        let fullNamesPool = [];
+        let fullPrizesPool = [];
+        let gameSchedule = [];
+        let currentRoundIdx = 0;
+        let roundStep = 0;
+        let isRolling = false;
+        let drawResults = [];
+
+        let hasPrizes = false, originalHasPrizes = false, currentDrawMode = "random";
+
+        let state = {
+            riggedMap: {},
+            lastPrize: 'none',
+            editingPrizeTarget: null
+        };
 
         function showToast(message, type = 'success') {
-            const toast = document.createElement('div'); 
-            toast.className = `toast-card ${type}`; 
+            const toast = document.createElement('div');
+            toast.className = `toast-card ${type}`;
             toast.innerHTML = `<div class="toast-icon"><iconify-icon icon="${type === 'error' ? 'ph:warning-circle-fill' : 'ph:check-circle-fill'}"></iconify-icon></div><div><div class="toast-title">${type === 'error' ? '提醒' : '已完成'}</div><div class="toast-message">${message}</div></div>`;
-            toastWrap.appendChild(toast);
-            if (typeof gsap !== 'undefined') { gsap.fromTo(toast, { y: 24, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" }); }
-            setTimeout(() => { if (typeof gsap !== 'undefined') { gsap.to(toast, { y: 16, opacity: 0, duration: 0.3, ease: "power2.in", onComplete: () => toast.remove() }); } else { toast.remove(); } }, 3200);
+            app.appendChild(toast);
+
+            if (typeof gsap !== 'undefined') {
+                gsap.fromTo(toast, { y: 24, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" });
+            }
+
+            setTimeout(() => {
+                if (typeof gsap !== 'undefined') {
+                    gsap.to(toast, { y: 16, opacity: 0, duration: 0.3, ease: "power2.in", onComplete: () => toast.remove() });
+                } else {
+                    toast.remove();
+                }
+            }, 3500);
         }
 
         function shootCelebrationPetals() {
-            for (let i = 0; i < 65; i++) {
-                const petal = document.createElement('div'); petal.className = 'absolute pointer-events-none';
-                const size = anime.random(15, 25); petal.style.width = `${size}px`; petal.style.height = `${size * anime.random(1, 1.3)}px`;
-                petal.style.background = anime.random(0, 1) ? 'radial-gradient(circle at 30% 30%, #FFFaf8 0%, #E6B3A3 100%)' : 'radial-gradient(circle at 30% 30%, #FFFaf8 0%, #B76E79 100%)';
-                petal.style.borderRadius = '70% 30% 80% 20% / 60% 70% 30% 40%'; petal.style.left = `${anime.random(-10, 110)}vw`; petal.style.top = `${anime.random(-60, -10)}vh`;
-                celebrationContainer.appendChild(petal);
-                anime({ targets: petal, translateY: ['0vh', '150vh'], translateX: () => `+=${anime.random(-250, 250)}`, rotateZ: () => anime.random(-720, 720), rotateX: () => anime.random(-360, 360), opacity: [ { value: 0, duration: 0 }, { value: 1, duration: 400 }, { value: 1, duration: anime.random(1500, 2500) }, { value: 0, duration: 800 } ], duration: () => anime.random(3000, 4500), delay: () => anime.random(0, 800), easing: 'easeInSine', complete: () => petal.remove() });
+            if (typeof anime === 'undefined') return;
+            try {
+                for (let i = 0; i < 65; i++) {
+                    const petal = document.createElement('div');
+                    petal.className = 'absolute pointer-events-none z-[9999]';
+
+                    const size = anime.random(15, 25);
+                    petal.style.width = `${size}px`;
+                    petal.style.height = `${size * anime.random(1, 1.3)}px`;
+                    petal.style.background = anime.random(0, 1)
+                        ? 'radial-gradient(circle at 30% 30%, #FFFaf8 0%, #E6B3A3 100%)'
+                        : 'radial-gradient(circle at 30% 30%, #FFFaf8 0%, #B76E79 100%)';
+                    petal.style.borderRadius = '70% 30% 80% 20% / 60% 70% 30% 40%';
+                    petal.style.left = `${anime.random(-10, 110)}vw`;
+                    petal.style.top = `${anime.random(-60, -10)}vh`;
+                    celebrationContainer.appendChild(petal);
+
+                    anime({
+                        targets: petal,
+                        translateY: ['0vh', '150vh'],
+                        translateX: () => `+=${anime.random(-250, 250)}`,
+                        rotateZ: () => anime.random(-720, 720),
+                        rotateX: () => anime.random(-360, 360),
+                        opacity: [
+                            { value: 0, duration: 0 },
+                            { value: 1, duration: 400 },
+                            { value: 1, duration: anime.random(1500, 2500) },
+                            { value: 0, duration: 800 }
+                        ],
+                        duration: () => anime.random(3000, 4500),
+                        delay: () => anime.random(0, 800),
+                        easing: 'easeInSine',
+                        complete: () => petal.remove()
+                    });
+                }
+            } catch(e) {
+                console.warn('花瓣特效發生錯誤，已略過：', e);
             }
         }
 
         if (typeof anime !== 'undefined') {
-            const petalsContainer = document.getElementById('petals-container');
-            for (let i = 0; i < 40; i++) {
-                const petal = document.createElement('div'); petal.className = 'petal';
-                const size = anime.random(8, 18); petal.style.width = `${size}px`; petal.style.height = `${size * anime.random(1, 1.2)}px`;
-                petal.style.left = `${anime.random(0, 100)}vw`; petal.style.top = `${anime.random(-20, 100)}vh`; petalsContainer.appendChild(petal); animatePetal(petal);
+            try {
+                const petalsContainer = document.getElementById('petals-container');
+                for (let i = 0; i < 40; i++) {
+                    const petal = document.createElement('div');
+                    petal.className = 'petal';
+                    const size = anime.random(8, 18);
+                    petal.style.width = `${size}px`;
+                    petal.style.height = `${size * anime.random(1, 1.2)}px`;
+                    petal.style.left = `${anime.random(0, 100)}vw`;
+                    petal.style.top = `${anime.random(-20, 100)}vh`;
+                    petalsContainer.appendChild(petal);
+                    animatePetal(petal);
+                }
+
+                function animatePetal(el) {
+                    const duration = anime.random(8000, 15000);
+                    anime({
+                        targets: el,
+                        translateY: [0, `110vh`],
+                        translateX: () => anime.random(-50, 50),
+                        rotateZ: () => anime.random(-180, 180),
+                        rotateX: () => anime.random(0, 360),
+                        opacity: { value: [0, anime.random(0.5, 0.9), 0], duration, easing: 'linear' },
+                        duration,
+                        delay: anime.random(0, 4000),
+                        easing: 'linear',
+                        complete: () => {
+                            el.style.top = `${anime.random(-20, -5)}vh`;
+                            el.style.left = `${anime.random(0, 100)}vw`;
+                            animatePetal(el);
+                        }
+                    });
+                }
+            } catch(e) {}
+        }
+
+        const fsBtn = document.getElementById('btn-fullscreen');
+        const fsIcon = document.getElementById('icon-fs');
+        fsBtn.addEventListener('click', () => {
+            const docElm = document.getElementById('storywed-lottery-app');
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                if (docElm.requestFullscreen) docElm.requestFullscreen();
+                else if (docElm.webkitRequestFullscreen) docElm.webkitRequestFullscreen();
+                fsIcon.setAttribute('icon', 'ph:corners-in-thin');
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                fsIcon.setAttribute('icon', 'ph:corners-out-thin');
             }
-            function animatePetal(el) { const duration = anime.random(8000, 15000); anime({ targets: el, translateY: [0, `110vh`], translateX: () => anime.random(-50, 50), rotateZ: () => anime.random(-180, 180), rotateX: () => anime.random(0, 360), opacity: { value: [0, anime.random(0.5, 0.9), 0], duration, easing: 'linear' }, duration, delay: anime.random(0, 4000), easing: 'linear', complete: () => { el.style.top = `${anime.random(-20, -5)}vh`; el.style.left = `${anime.random(0, 100)}vw`; animatePetal(el); } }); }
+        });
+
+        function getSelectedMode() {
+            const checked = document.querySelector('input[name="draw-mode"]:checked');
+            return checked ? checked.value : 'random';
         }
 
-        const fsBtn = document.getElementById('btn-fullscreen'); const fsIcon = document.getElementById('icon-fs');
-        fsBtn.addEventListener('click', () => { const docElm = document.getElementById('storywed-lottery-app'); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (docElm.requestFullscreen) docElm.requestFullscreen(); else if (docElm.webkitRequestFullscreen) docElm.webkitRequestFullscreen(); fsIcon.setAttribute('icon', 'ph:corners-in-thin'); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); fsIcon.setAttribute('icon', 'ph:corners-out-thin'); } });
-
-        let namesPool = [], prizesPool = [], sequentialPrizeQueue = [], hasPrizes = false, originalHasPrizes = false, currentWinner = "", currentPrize = "", currentDrawMode = "random", shuffleInterval = null, isRollingName = false, isRollingPrize = false, drawResults = [];
-
-        const textarea = document.getElementById('participants-data'), prizesList = document.getElementById('prizes-list'), setupView = document.getElementById('setup-view'), drawView = document.getElementById('draw-view'), resultsView = document.getElementById('results-view');
-        const headerPoolLeft = document.getElementById('header-pool-left'), headerPrizeStatus = document.getElementById('header-prize-status'), headerPrizeLeft = document.getElementById('header-prize-left'), headerDrawMode = document.getElementById('header-draw-mode'), headerDrawModeText = document.getElementById('header-draw-mode-text');
-        const winnerName = document.getElementById('winner-name'), winnerPrize = document.getElementById('winner-prize'), sonar = document.getElementById('draw-sonar');
-        const btnName = document.getElementById('btn-action-name'), btnPrize = document.getElementById('btn-action-prize'), btnNext = document.getElementById('btn-action-next'), btnShowResults = document.getElementById('btn-show-results'), nextBtnText = document.getElementById('next-btn-text'), nextBtnIcon = document.getElementById('next-btn-icon');
-        const resultsList = document.getElementById('results-list'), summaryTotalCount = document.getElementById('summary-total-count'), summaryPrizeCount = document.getElementById('summary-prize-count'), summaryDrawMode = document.getElementById('summary-draw-mode');
-        const importModal = document.getElementById('import-modal'), importCodeInput = document.getElementById('import-code-input'), confirmImportBtn = document.getElementById('confirm-import-btn'), closeImportModalBtn = document.getElementById('close-import-modal-btn'), openImportBtn = document.getElementById('btn-import-config');
-
-        function getSelectedMode() { const checked = document.querySelector('input[name="draw-mode"]:checked'); return checked ? checked.value : 'random'; }
-        function setSelectedMode(mode) { const target = document.querySelector(`input[name="draw-mode"][value="${mode}"]`); if (target) target.checked = true; }
-        function getModeLabel(mode) { return mode === 'sequential' ? '依序抽出' : '隨機抽出'; }
-        function resetRollingState() { if (shuffleInterval) clearInterval(shuffleInterval); shuffleInterval = null; isRollingName = false; isRollingPrize = false; sonar.style.display = 'none'; }
-        
-        function showPrizeText(text, withStars = false) { 
-            winnerPrize.classList.remove('hidden'); winnerPrize.classList.add('flex'); winnerPrize.style.opacity = '1'; winnerPrize.style.transform = 'translateY(0)'; winnerPrize.style.color = '#9E5C66'; 
-            if (withStars) { winnerPrize.innerHTML = `<iconify-icon icon="ph:star-fill" class="text-xl"></iconify-icon> ${text} <iconify-icon icon="ph:star-fill" class="text-xl"></iconify-icon>`; } else { winnerPrize.textContent = text; } 
-        }
-        
-        function hidePrizeText() { winnerPrize.classList.add('hidden'); winnerPrize.classList.remove('flex'); winnerPrize.style.opacity = '0'; winnerPrize.style.transform = 'translateY(16px)'; winnerPrize.textContent = ''; winnerPrize.innerHTML = ''; }
-        
-        function updateHeaderStatus() { 
-            headerPoolLeft.textContent = namesPool.length; 
-            if (hasPrizes) { headerPrizeStatus.classList.remove('hide-view'); headerPrizeLeft.textContent = currentDrawMode === 'sequential' ? sequentialPrizeQueue.length : prizesPool.length; headerDrawMode.classList.remove('hide-view'); headerDrawModeText.textContent = getModeLabel(currentDrawMode); } 
-            else { headerPrizeStatus.classList.add('hide-view'); headerDrawMode.classList.add('hide-view'); } 
-        }
-        
-        function pushDrawResult(winner, prize) { drawResults.push({ order: drawResults.length + 1, prizeName: prize || '', winnerName: winner || '—' }); }
-        function escapeHTML(str) { return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-        
-        function renderResultsView() { 
-            const shouldShowPrizeColumn = originalHasPrizes; 
-            summaryTotalCount.textContent = drawResults.length; 
-            summaryPrizeCount.textContent = drawResults.filter(item => item.prizeName && item.prizeName !== '').length; 
-            summaryDrawMode.textContent = getModeLabel(currentDrawMode); 
-            if (drawResults.length === 0) { resultsList.innerHTML = `<div class="empty-result-box text-center font-serif">目前尚無抽獎結果。</div>`; return; } 
-            if (shouldShowPrizeColumn) { 
-                resultsList.innerHTML = drawResults.map(item => `<div class="result-card flex flex-col md:flex-row gap-4 md:gap-6 items-start"><div class="result-order-badge">${item.order}</div><div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full"><div><div class="result-label">獎項名稱</div><div class="result-value">${escapeHTML(item.prizeName || '—')}</div></div><div><div class="result-label">獎項內容 / 得獎者</div><div class="result-value">${escapeHTML(item.winnerName)}</div></div></div></div>`).join(''); 
-            } else { 
-                resultsList.innerHTML = drawResults.map(item => `<div class="result-card flex flex-col md:flex-row gap-4 md:gap-6 items-start"><div class="result-order-badge">${item.order}</div><div class="flex-1 w-full"><div class="result-label">得獎者</div><div class="result-value">${escapeHTML(item.winnerName)}</div></div></div>`).join(''); 
-            } 
+        function setSelectedMode(mode) {
+            const target = document.querySelector(`input[name="draw-mode"][value="${mode}"]`);
+            if (target) target.checked = true;
         }
 
-        function switchView(fromView, toView) { 
-            const tl = gsap.timeline(); 
-            tl.to(fromView, { opacity: 0, scale: 0.97, duration: 0.3, ease: "power2.in" })
-              .call(() => { 
-                  fromView.classList.add('hide-view'); 
-                  toView.classList.remove('hide-view'); 
-                  toView.style.display = 'flex'; 
-                  toView.style.flexDirection = 'column'; 
-              })
-              .fromTo( toView, { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" } ); 
+        function getModeLabel(mode) {
+            return mode === 'sequential' ? '依序抽出' : '隨機抽出';
         }
 
-        function updateParticipantCountDisplay() { const count = textarea.value.split('\n').filter(l => l.trim() !== '').length; document.getElementById('participant-count').textContent = count; headerPoolLeft.textContent = count; }
-        
-        function getPrizeRowsData() { 
-            const rows = prizesList.querySelectorAll('.prize-row'); const prizes = []; 
-            rows.forEach(row => { const name = row.querySelector('.prize-name').value.trim(); const count = Math.max(1, parseInt(row.querySelector('.prize-count').value, 10) || 1); if (name) { prizes.push({ name, count }); } }); 
-            return prizes; 
+        function getRemainingPrizeRounds() {
+            return gameSchedule.slice(currentRoundIdx).filter(item => item && item.prize).length;
         }
         
-        function createPrizeRow(name = '', count = 1) { 
-            const row = document.createElement('div'); row.className = 'prize-row flex gap-2 items-center group bg-white/60 p-2.5 rounded-xl border border-white shadow-sm flex-wrap sm:flex-nowrap transition-all hover:shadow-md hover:bg-white'; 
-            row.innerHTML = `<input type="text" class="prize-name flex-grow min-w-[120px] rounded-lg px-3 py-2 text-sm font-serif border-none bg-white/80 focus:bg-white" placeholder="獎項名稱 (例: 浪漫雙人餐券)" value="${escapeHTML(name)}"><span class="text-brand-text/50 text-xs font-sans whitespace-nowrap">數量</span><input type="number" min="1" class="prize-count w-16 rounded-lg px-2 py-2 text-sm font-serif text-center border-none bg-white/80 focus:bg-white" value="${count}"><button type="button" class="remove-prize-btn text-brand-text/30 hover:text-red-400 transition-colors p-2" title="刪除"><iconify-icon icon="ph:trash-light" class="text-lg"></iconify-icon></button>`; 
-            return row; 
+        function updateHeaderStatus() {
+            const remainingNames = Math.max(0, gameSchedule.length - currentRoundIdx);
+            const remainingPrizeRounds = getRemainingPrizeRounds();
+            headerPoolLeft.textContent = remainingNames;
+            
+            if (remainingPrizeRounds > 0) {
+                headerPrizeStatus.classList.remove('hide-view');
+                headerPrizeLeft.textContent = remainingPrizeRounds;
+                headerDrawMode.classList.remove('hide-view');
+                headerDrawModeText.textContent = getModeLabel(currentDrawMode);
+            } else {
+                headerPrizeStatus.classList.add('hide-view');
+                headerDrawMode.classList.add('hide-view');
+            }
         }
-        
-        function renderPrizeRows(prizes = []) { 
-            prizesList.innerHTML = ''; 
-            if (!prizes.length) { prizesList.appendChild(createPrizeRow('', 1)); return; } 
-            prizes.forEach(item => { prizesList.appendChild(createPrizeRow(item.name, item.count)); }); 
-        }
-        
-        function encodeConfig(data) { const json = JSON.stringify(data); return 'STORYWEDCFG:' + btoa(unescape(encodeURIComponent(json))); }
-        function decodeConfig(code) { const cleaned = String(code || '').trim(); if (!cleaned.startsWith('STORYWEDCFG:')) { throw new Error('格式錯誤'); } const base64 = cleaned.replace('STORYWEDCFG:', ''); const json = decodeURIComponent(escape(atob(base64))); return JSON.parse(json); }
-        async function copyText(text) { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } const temp = document.createElement('textarea'); temp.value = text; temp.style.position = 'fixed'; temp.style.opacity = '0'; temp.style.left = '-9999px'; document.body.appendChild(temp); temp.focus(); temp.select(); const success = document.execCommand('copy'); document.body.removeChild(temp); return success; }
-        
-        function openImportModal() { importCodeInput.value = ''; importModal.classList.remove('hide-view'); importModal.classList.add('show'); setTimeout(() => importCodeInput.focus(), 50); }
-        function closeImportModal() { importModal.classList.remove('show'); importModal.classList.add('hide-view'); }
-        function importConfigFromCode(pasted) { const data = decodeConfig(pasted); if (!data || !Array.isArray(data.names) || !Array.isArray(data.prizes)) { throw new Error('資料內容不完整'); } textarea.value = data.names.join('\n'); updateParticipantCountDisplay(); setSelectedMode(data.drawMode === 'sequential' ? 'sequential' : 'random'); const safePrizes = data.prizes.map(item => ({ name: String(item.name || '').trim(), count: Math.max(1, parseInt(item.count, 10) || 1) })).filter(item => item.name); renderPrizeRows(safePrizes); }
 
-        textarea.addEventListener('input', updateParticipantCountDisplay);
+        function pushDrawResult(winnerName, prizeName = '') {
+            drawResults.push({
+                order: drawResults.length + 1,
+                winnerName: winnerName || '',
+                prizeName: prizeName || ''
+            });
+        }
+
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
         
-        document.getElementById('add-prize-btn').addEventListener('click', () => { 
-            prizesList.appendChild(createPrizeRow('', 1)); 
+        function renderResultsView() {
+            const shouldShowPrizeColumn = drawResults.some(item => item.prizeName && item.prizeName !== '');
+            summaryTotalCount.textContent = drawResults.length;
+            summaryPrizeCount.textContent = drawResults.filter(item => item.prizeName && item.prizeName !== '').length;
+            summaryDrawMode.textContent = originalHasPrizes ? getModeLabel(currentDrawMode) : '純抽名字';
+
+            if (drawResults.length === 0) {
+                resultsList.innerHTML = `<div class="empty-result-box text-center font-serif">目前尚無抽獎結果。</div>`;
+                return;
+            }
+
+            if (shouldShowPrizeColumn) {
+                resultsList.innerHTML = drawResults.map(item => `
+                    <div class="result-card flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+                        <div class="result-order-badge">${item.order}</div>
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
+                            <div>
+                                <div class="result-label">獎項名稱</div>
+                                <div class="result-value">${escapeHTML(item.prizeName || '—')}</div>
+                            </div>
+                            <div>
+                                <div class="result-label">得獎者</div>
+                                <div class="result-value text-brand-rosegold font-bold">${escapeHTML(item.winnerName)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                resultsList.innerHTML = drawResults.map(item => `
+                    <div class="result-card flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+                        <div class="result-order-badge">${item.order}</div>
+                        <div class="flex-1 w-full">
+                            <div class="result-label">得獎者</div>
+                            <div class="result-value text-brand-rosegold font-bold">${escapeHTML(item.winnerName)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function switchView(fromView, toView) {
+            if (typeof gsap !== 'undefined') {
+                const tl = gsap.timeline();
+                tl.to(fromView, { opacity: 0, scale: 0.97, duration: 0.3, ease: "power2.in" })
+                  .call(() => {
+                      fromView.classList.add('hide-view');
+                      toView.classList.remove('hide-view');
+                      toView.style.display = 'flex';
+                      toView.style.flexDirection = 'column';
+                  })
+                  .fromTo(toView, { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" });
+            } else {
+                fromView.classList.add('hide-view');
+                toView.classList.remove('hide-view');
+                toView.style.display = 'flex';
+                toView.style.flexDirection = 'column';
+            }
+        }
+
+        function updateParticipantCountDisplay() {
+            const count = textarea.value.split('\n').filter(l => l.trim() !== '').length;
+            document.getElementById('participant-count').textContent = count;
+            updatePrizeMappingUI();
+        }
+        
+        function getPrizeRowsData() {
+            const rows = prizesList.querySelectorAll('.prize-row');
+            const prizes = [];
+            rows.forEach(row => {
+                const name = row.querySelector('.prize-name').value.trim();
+                const count = Math.max(1, parseInt(row.querySelector('.prize-count').value, 10) || 1);
+                if (name) prizes.push({ name, count });
+            });
+            return prizes;
+        }
+        
+        function createPrizeRow(name = '', count = 1) {
+            const row = document.createElement('div');
+            row.className = 'prize-row flex gap-2 items-center group bg-white/60 p-2.5 rounded-xl border border-white shadow-sm flex-wrap sm:flex-nowrap transition-all hover:shadow-md hover:bg-white';
+            row.innerHTML = `
+                <input type="text" class="prize-name flex-grow min-w-[120px] rounded-lg px-3 py-2 text-sm font-serif border-none bg-white/80 focus:bg-white" placeholder="獎項名稱（例：浪漫雙人餐券）" value="${escapeHTML(name)}">
+                <span class="text-brand-text/50 text-xs font-sans whitespace-nowrap">數量</span>
+                <input type="number" min="1" class="prize-count w-16 rounded-lg px-2 py-2 text-sm font-serif text-center border-none bg-white/80 focus:bg-white" value="${count}">
+                <button type="button" class="remove-prize-btn text-brand-text/30 hover:text-red-400 transition-colors p-2" title="刪除">
+                    <iconify-icon icon="ph:trash-light" class="text-lg"></iconify-icon>
+                </button>
+            `;
+            row.querySelector('.prize-name').addEventListener('input', updatePrizeMappingUI);
+            row.querySelector('.prize-count').addEventListener('input', updatePrizeMappingUI);
+            return row;
+        }
+        
+        function renderPrizeRows(prizes = []) {
+            prizesList.innerHTML = '';
+            if (!prizes.length) {
+                prizesList.appendChild(createPrizeRow('', 1));
+                updatePrizeMappingUI();
+                return;
+            }
+            prizes.forEach(item => prizesList.appendChild(createPrizeRow(item.name, item.count)));
+            updatePrizeMappingUI();
+        }
+
+        textarea.addEventListener('input', () => { try { updateParticipantCountDisplay(); } catch(e){} });
+        textarea.addEventListener('keyup', () => { try { updateParticipantCountDisplay(); } catch(e){} });
+
+        function updatePrizeMappingUI() {
+            try {
+                const names = textarea.value.split('\n').map(v => v.trim()).filter(Boolean);
+
+                let totalCounts = {};
+                getPrizeRowsData().forEach(p => totalCounts[p.name] = (totalCounts[p.name] || 0) + p.count);
+
+                let assignedCounts = {};
+
+                if (state.lastPrize !== 'none' && !totalCounts[state.lastPrize]) {
+                    state.lastPrize = 'none';
+                }
+
+                for (let name in state.riggedMap) {
+                    let prize = state.riggedMap[name];
+                    if (prize !== 'random') {
+                        if (!names.includes(name)) {
+                            delete state.riggedMap[name];
+                            continue;
+                        }
+                        let assigned = assignedCounts[prize] || 0;
+                        let total = totalCounts[prize] || 0;
+                        if (assigned >= total) {
+                            state.riggedMap[name] = 'random';
+                        } else {
+                            assignedCounts[prize] = assigned + 1;
+                        }
+                    }
+                }
+
+                prizeMappingArea.innerHTML = '';
+                names.forEach(name => {
+                    if (!state.riggedMap[name]) state.riggedMap[name] = 'random';
+
+                    const item = document.createElement('div');
+                    item.className = 'mapping-item';
+                  
+                    const span = document.createElement('span');
+                    span.className = 'name-text';
+                    span.textContent = name;
+
+                    const btn = document.createElement('button');
+                    btn.className = 'prize-mapping-btn';
+                    if (state.riggedMap[name] !== 'random') {
+                        btn.textContent = state.riggedMap[name];
+                        btn.classList.add('has-value');
+                    } else {
+                        btn.textContent = '🎲 隨機';
+                    }
+
+                    btn.onclick = () => openPrizeModal(name);
+
+                    item.appendChild(span);
+                    item.appendChild(btn);
+                    prizeMappingArea.appendChild(item);
+                });
+
+                if (state.lastPrize !== 'none') {
+                    btnSetLastPrize.textContent = `🎯 壓軸：${state.lastPrize}`;
+                    btnSetLastPrize.classList.add('has-value');
+                } else {
+                    btnSetLastPrize.textContent = '🎲 隨機（無指定）';
+                    btnSetLastPrize.classList.remove('has-value');
+                }
+                btnSetLastPrize.onclick = () => openPrizeModal('lastPrize');
+            } catch(e) {}
+        }
+
+        function openPrizeModal(target) {
+            state.editingPrizeTarget = target;
+            const currentPrizes = getPrizeRowsData().map(p => p.name).filter(Boolean);
+            
+            if (currentPrizes.length === 0) {
+                showToast('請先在上方的「寶箱獎項」輸入內容，才能進行指定喔！');
+                return;
+            }
+
+            modalPrizePicker.innerHTML = '';
+            
+            prizeModalTitle.textContent = target === 'lastPrize' ? '設定最後壓軸獎項' : `指定獎項給 ${target}`;
+
+            const randomBtn = document.createElement('button');
+            randomBtn.className = 'prize-list-btn';
+            randomBtn.textContent = target === 'lastPrize' ? '🎲 無指定（隨機安排）' : '🎲 隨機分配';
+            randomBtn.onclick = () => {
+                if (target === 'lastPrize') state.lastPrize = 'none';
+                else state.riggedMap[target] = 'random';
+                updatePrizeMappingUI();
+                prizeModal.classList.remove('show');
+            };
+            modalPrizePicker.appendChild(randomBtn);
+
+            let totalCounts = {};
+            getPrizeRowsData().forEach(p => totalCounts[p.name] = (totalCounts[p.name] || 0) + p.count);
+
+            let otherAssignedCounts = {};
+            for (let name in state.riggedMap) {
+                if (state.riggedMap[name] !== 'random' && name !== target) {
+                    otherAssignedCounts[state.riggedMap[name]] = (otherAssignedCounts[state.riggedMap[name]] || 0) + 1;
+                }
+            }
+
+            const uniquePrizes = [...new Set(currentPrizes)];
+            uniquePrizes.forEach(prize => {
+                const btn = document.createElement('button');
+                btn.className = 'prize-list-btn';
+              
+                let total = totalCounts[prize];
+                let otherAssigned = otherAssignedCounts[prize] || 0;
+                let remaining = total - otherAssigned;
+
+                let isSelected = false;
+                if (target === 'lastPrize' && state.lastPrize === prize) isSelected = true;
+                if (target !== 'lastPrize' && state.riggedMap[target] === prize) isSelected = true;
+
+                if (isSelected) btn.classList.add('selected');
+
+                if (target !== 'lastPrize' && remaining <= 0 && !isSelected) {
+                    btn.disabled = true;
+                    btn.textContent = `${prize}（已無名額）`;
+                } else {
+                    btn.textContent = prize;
+                    btn.onclick = () => {
+                        if (target === 'lastPrize') state.lastPrize = prize;
+                        else state.riggedMap[target] = prize;
+                        updatePrizeMappingUI();
+                        prizeModal.classList.remove('show');
+                    };
+                }
+                modalPrizePicker.appendChild(btn);
+            });
+
+            prizeModal.classList.add('show');
+        }
+        
+        function encodeConfig(data) {
+            const json = JSON.stringify(data);
+            return 'STORYWEDCFG:' + btoa(unescape(encodeURIComponent(json)));
+        }
+
+        function decodeConfig(code) {
+            const cleaned = String(code || '').trim();
+            if (!cleaned.startsWith('STORYWEDCFG:')) throw new Error('格式錯誤');
+            const base64 = cleaned.replace('STORYWEDCFG:', '');
+            const json = decodeURIComponent(escape(atob(base64)));
+            return JSON.parse(json);
+        }
+
+        async function copyText(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+                return true;
+            }
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            temp.style.position = 'fixed';
+            temp.style.opacity = '0';
+            temp.style.left = '-9999px';
+            document.body.appendChild(temp);
+            temp.focus();
+            temp.select();
+            const success = document.execCommand('copy');
+            document.body.removeChild(temp);
+            return success;
+        }
+        
+        function openImportModal() {
+            importCodeInput.value = '';
+            importModal.classList.remove('hide-view');
+            importModal.classList.add('show');
+            setTimeout(() => importCodeInput.focus(), 50);
+        }
+
+        function closeImportModal() {
+            importModal.classList.remove('show');
+            importModal.classList.add('hide-view');
+        }
+
+        function updateCounts() {
+            updateParticipantCountDisplay();
+            updatePrizeMappingUI();
+        }
+
+        function importConfigFromCode(pasted) {
+            const data = decodeConfig(pasted);
+            if (!data || !Array.isArray(data.names) || !Array.isArray(data.prizes)) throw new Error('資料內容不完整');
+
+            textarea.value = data.names.join('\n');
+            setSelectedMode(data.drawMode === 'sequential' ? 'sequential' : 'random');
+
+            const safePrizes = data.prizes
+                .map(item => ({
+                    name: String(item.name || '').trim(),
+                    count: Math.max(1, parseInt(item.count, 10) || 1)
+                }))
+                .filter(item => item.name);
+
+            renderPrizeRows(safePrizes);
+            state.riggedMap = data.riggedMap || {};
+            state.lastPrize = data.lastPrize !== undefined ? data.lastPrize : 'none';
+            updateCounts();
+        }
+
+        function shuffleArray(arr) {
+            return [...arr].sort(() => Math.random() - 0.5);
+        }
+
+        function removeOneFromArray(arr, value) {
+            const idx = arr.indexOf(value);
+            if (idx !== -1) arr.splice(idx, 1);
+        }
+
+        function configureDrawStageForCurrentRound(resetVisuals = false) {
+            const currentPair = gameSchedule[currentRoundIdx];
+            const roundHasPrize = !!(currentPair && currentPair.prize);
+
+            if (resetVisuals) {
+                resetWheel(wheelName, 'name');
+                resetWheel(wheelPrize, 'prize');
+            }
+
+            if (roundHasPrize) {
+                panelPrize.classList.remove('hidden');
+                drawDivider.classList.remove('hidden');
+                drawDivider.classList.add('flex');
+
+                titleName.textContent = currentDrawMode === 'sequential' ? '獲得該獎項的人選' : '目前抽出的人選';
+                titlePrize.textContent = currentDrawMode === 'sequential' ? '本輪的獎項內容' : '為他抽出的獎項內容';
+
+                if (typeof gsap !== 'undefined') {
+                    gsap.set([titleName, titlePrize, drawDivider], { opacity: 0 });
+                } else {
+                    titleName.style.opacity = '0';
+                    titlePrize.style.opacity = '0';
+                    drawDivider.style.opacity = '0';
+                }
+
+                if (roundStep === 0) {
+                    btnMainAction.textContent = currentDrawMode === 'sequential' ? '公佈本輪獎項' : '抽取幸運兒';
+                }
+            } else {
+                panelPrize.classList.add('hidden');
+                drawDivider.classList.add('hidden');
+                drawDivider.classList.remove('flex');
+
+                titleName.textContent = '目前抽出的人選';
+
+                if (typeof gsap !== 'undefined') {
+                    gsap.set(titleName, { opacity: 0 });
+                    gsap.set(titlePrize, { opacity: 0 });
+                    gsap.set(drawDivider, { opacity: 0 });
+                } else {
+                    titleName.style.opacity = '0';
+                    titlePrize.style.opacity = '0';
+                    drawDivider.style.opacity = '0';
+                }
+
+                if (resetVisuals) {
+                    resetWheel(wheelPrize, 'prize');
+                }
+
+                if (roundStep === 0) {
+                    btnMainAction.textContent = '抽取幸運兒';
+                }
+            }
+
+            updateHeaderStatus();
+        }
+
+        document.getElementById('add-prize-btn').addEventListener('click', () => {
+            prizesList.appendChild(createPrizeRow('', 1));
             setTimeout(() => { prizesList.scrollTop = prizesList.scrollHeight; }, 10);
+            updatePrizeMappingUI();
         });
         
-        prizesList.addEventListener('click', (e) => { const btn = e.target.closest('.remove-prize-btn'); if (btn) { btn.closest('.prize-row').remove(); if (!prizesList.querySelector('.prize-row')) { prizesList.appendChild(createPrizeRow('', 1)); } } });
+        prizesList.addEventListener('click', (e) => {
+            const btn = e.target.closest('.remove-prize-btn');
+            if (btn) {
+                btn.closest('.prize-row').remove();
+                if (!prizesList.querySelector('.prize-row')) prizesList.appendChild(createPrizeRow('', 1));
+                updatePrizeMappingUI();
+            }
+        });
         
-        document.getElementById('btn-export-config').addEventListener('click', async () => { const names = textarea.value.split('\n').map(n => n.trim()).filter(Boolean); const prizes = getPrizeRowsData(); const drawMode = getSelectedMode(); const payload = { version: 1, drawMode, names, prizes }; try { const code = encodeConfig(payload); const copied = await copyText(code); if (!copied) { throw new Error('copy failed'); } showToast('已複製代碼，請保存於記事本中，使用時僅需一鍵導入貼上即可'); } catch (error) { showToast('導出失敗，請稍後再試。', 'error'); } });
-        openImportBtn.addEventListener('click', () => { openImportModal(); });
-        closeImportModalBtn.addEventListener('click', () => { closeImportModal(); });
-        importModal.addEventListener('click', (e) => { if (e.target === importModal) { closeImportModal(); } });
-        confirmImportBtn.addEventListener('click', () => { const pasted = importCodeInput.value.trim(); if (!pasted) { showToast('請先貼上設定代碼。', 'error'); return; } try { importConfigFromCode(pasted); closeImportModal(); showToast('設定已成功導入並還原。'); } catch (error) { showToast('導入失敗，請確認代碼是否正確。', 'error'); } });
+        document.getElementById('btn-export-config').addEventListener('click', async () => {
+            const names = textarea.value.split('\n').map(n => n.trim()).filter(Boolean);
+            const prizes = getPrizeRowsData();
+            const drawMode = getSelectedMode();
+            const payload = { version: 3, drawMode, names, prizes, riggedMap: state.riggedMap, lastPrize: state.lastPrize };
+
+            try {
+                const code = encodeConfig(payload);
+                const copied = await copyText(code);
+                if (!copied) throw new Error('copy failed');
+                showToast('已複製代碼，請保存於記事本中，使用時僅需一鍵導入貼上即可');
+            } catch (error) {
+                showToast('導出失敗，請稍後再試。', 'error');
+            }
+        });
+
+        openImportBtn.addEventListener('click', () => openImportModal());
+        closeImportModalBtn.addEventListener('click', () => closeImportModal());
+        importModal.addEventListener('click', (e) => { if (e.target === importModal) closeImportModal(); });
+        closePrizeModalBtn.addEventListener('click', () => prizeModal.classList.remove('show'));
+        prizeModal.addEventListener('click', (e) => { if (e.target === prizeModal) prizeModal.classList.remove('show'); });
+
+        confirmImportBtn.addEventListener('click', () => {
+            const pasted = importCodeInput.value.trim();
+            if (!pasted) {
+                showToast('請先貼上設定代碼。', 'error');
+                return;
+            }
+            try {
+                importConfigFromCode(pasted);
+                closeImportModal();
+                showToast('設定已成功導入並還原。');
+            } catch (error) {
+                showToast('導入失敗，請確認代碼是否正確。', 'error');
+            }
+        });
 
         document.getElementById('go-to-draw-btn').addEventListener('click', () => {
             const rawNames = textarea.value.split('\n').map(n => n.trim()).filter(n => n !== '');
-            if (rawNames.length === 0) { showToast('請至少輸入一位參加賓客喔！', 'error'); return; }
-            currentDrawMode = getSelectedMode(); namesPool = [...rawNames]; prizesPool = []; sequentialPrizeQueue = []; drawResults = [];
-            const prizeRowsData = getPrizeRowsData(); prizeRowsData.forEach(item => { for (let i = 0; i < item.count; i++) { prizesPool.push(item.name); sequentialPrizeQueue.push(item.name); } });
-            hasPrizes = prizesPool.length > 0; originalHasPrizes = hasPrizes;
-            if (hasPrizes && namesPool.length < prizesPool.length) { showToast('目前的賓客名單少於總獎項數，請先增加名單。', 'error'); return; }
-            currentWinner = ''; currentPrize = ''; initDrawStage();
-            const tl = gsap.timeline(); tl.to(setupView, { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" })
-              .call(() => { 
-                  setupView.classList.add('hide-view'); 
-                  drawView.classList.remove('hide-view'); 
-                  drawView.style.display = 'flex'; 
-                  drawView.style.flexDirection = 'column'; 
-              })
-              .fromTo(drawView, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" });
+            if (rawNames.length === 0) {
+                showToast('請至少輸入一位參加賓客喔！', 'error');
+                return;
+            }
+            
+            const prizeRowsData = getPrizeRowsData();
+            let flatPrizes = [];
+            prizeRowsData.forEach(item => {
+                for (let i = 0; i < item.count; i++) {
+                    flatPrizes.push(item.name);
+                }
+            });
+
+            hasPrizes = flatPrizes.length > 0;
+            originalHasPrizes = hasPrizes;
+            currentDrawMode = getSelectedMode();
+            
+            fullNamesPool = [...rawNames];
+            fullPrizesPool = [...flatPrizes];
+
+            let finalPairs = [];
+            let rigErrors = [];
+
+            if (!hasPrizes) {
+                finalPairs = shuffleArray(rawNames).map(n => ({ winner: n, prize: '' }));
+            } else {
+                const prizeDrawCount = Math.min(rawNames.length, flatPrizes.length);
+
+                let availableNames = [...rawNames];
+                let availablePrizes = [...flatPrizes];
+                let currentRiggedMap = { ...state.riggedMap };
+
+                if (state.lastPrize !== 'none' && availablePrizes.includes(state.lastPrize)) {
+                    const assignedPlayer = availableNames.find(n => currentRiggedMap[n] === state.lastPrize);
+                    if (!assignedPlayer) {
+                        const freePlayer = availableNames.slice().reverse().find(n => !currentRiggedMap[n] || currentRiggedMap[n] === 'random');
+                        if (freePlayer) {
+                            currentRiggedMap[freePlayer] = state.lastPrize;
+                        } else {
+                            rigErrors.push('無法安排壓軸獎項，因為所有人都有指定的獎項了');
+                        }
+                    }
+                }
+
+                let prizePairs = [];
+
+                for (let name in currentRiggedMap) {
+                    const pPrize = currentRiggedMap[name];
+                    if (pPrize && pPrize !== 'random' && prizePairs.length < prizeDrawCount) {
+                        if (availableNames.includes(name)) {
+                            const prizeIdx = availablePrizes.indexOf(pPrize);
+                            if (prizeIdx !== -1) {
+                                prizePairs.push({ winner: name, prize: pPrize });
+                                removeOneFromArray(availableNames, name);
+                                availablePrizes.splice(prizeIdx, 1);
+                            } else {
+                                rigErrors.push(`指定的獎項數量不足：${pPrize}`);
+                            }
+                        }
+                    }
+                }
+
+                const needMorePrizePairs = prizeDrawCount - prizePairs.length;
+                const selectedNames = shuffleArray(availableNames).slice(0, needMorePrizePairs);
+
+                selectedNames.forEach(name => removeOneFromArray(availableNames, name));
+
+                const selectedPrizes = [];
+                const shuffledAvailablePrizes = shuffleArray(availablePrizes);
+                while (selectedPrizes.length < needMorePrizePairs && shuffledAvailablePrizes.length > 0) {
+                    selectedPrizes.push(shuffledAvailablePrizes.pop());
+                }
+
+                const randomPairs = selectedNames.map((n, i) => ({ winner: n, prize: selectedPrizes[i] || '' }));
+                prizePairs = [...prizePairs, ...randomPairs].filter(item => item.prize);
+
+                prizePairs = shuffleArray(prizePairs);
+
+                if (state.lastPrize !== 'none') {
+                    const lastPrizeIdx = prizePairs.findIndex(p => p.prize === state.lastPrize);
+                    if (lastPrizeIdx !== -1) {
+                        const lastPair = prizePairs.splice(lastPrizeIdx, 1)[0];
+                        prizePairs.push(lastPair);
+                    }
+                }
+
+                const nameOnlyPairs = shuffleArray(availableNames).map(name => ({ winner: name, prize: '' }));
+
+                finalPairs = [...prizePairs, ...nameOnlyPairs];
+            }
+
+            if (rigErrors.length > 0) {
+                showToast('提示：部分指定條件因衝突而無法成立（' + rigErrors[0] + '）');
+            }
+
+            gameSchedule = finalPairs;
+            currentRoundIdx = 0;
+            drawResults = [];
+            
+            initDrawStage();
+
+            if (typeof gsap !== 'undefined') {
+                const tl = gsap.timeline();
+                tl.to(setupView, { opacity: 0, y: -30, duration: 0.4, ease: "power2.in" })
+                  .call(() => {
+                      setupView.classList.add('hide-view');
+                      drawView.classList.remove('hide-view');
+                      drawView.style.display = 'flex';
+                      drawView.style.flexDirection = 'column';
+                  })
+                  .fromTo(drawView, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" });
+            } else {
+                setupView.classList.add('hide-view');
+                drawView.classList.remove('hide-view');
+                drawView.style.display = 'flex';
+                drawView.style.flexDirection = 'column';
+            }
         });
 
         document.getElementById('btn-back-setup').addEventListener('click', () => {
-            resetRollingState();
-            if (!resultsView.classList.contains('hide-view')) { switchView(resultsView, setupView); return; }
-            const tl = gsap.timeline(); tl.to(drawView, { opacity: 0, scale: 0.95, duration: 0.3, ease: "power2.in" })
-              .call(() => { 
-                  drawView.classList.add('hide-view'); 
-                  setupView.classList.remove('hide-view'); 
-                  setupView.style.display = 'flex'; 
-                  setupView.style.flexDirection = 'column'; 
-              })
-              .to(setupView, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" });
+            if (!resultsView.classList.contains('hide-view')) {
+                switchView(resultsView, setupView);
+                return;
+            }
+
+            if (typeof gsap !== 'undefined') {
+                const tl = gsap.timeline();
+                tl.to(drawView, { opacity: 0, scale: 0.95, duration: 0.3, ease: "power2.in" })
+                  .call(() => {
+                      drawView.classList.add('hide-view');
+                      setupView.classList.remove('hide-view');
+                      setupView.style.display = 'flex';
+                      setupView.style.flexDirection = 'column';
+                  })
+                  .to(setupView, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" });
+            } else {
+                drawView.classList.add('hide-view');
+                setupView.classList.remove('hide-view');
+                setupView.style.display = 'flex';
+                setupView.style.flexDirection = 'column';
+            }
         });
+
+        function resetWheel(wheelEl, type) {
+            const icon = type === 'prize' ? 'ph:gift-light' : 'ph:user-light';
+            wheelEl.innerHTML = `<div class="slot-item"><span class="slot-text text-6xl md:text-8xl"><iconify-icon icon="${icon}" class="text-brand-rosegold animate-pulse"></iconify-icon></span></div>`;
+            if (typeof gsap !== 'undefined') gsap.set(wheelEl, { y: 0 });
+        }
+
+        function rollSlot(wheelEl, finalItemText, itemsPool, onComplete) {
+            if (typeof gsap === 'undefined') {
+                wheelEl.innerHTML = `<div class="slot-item"><span class="slot-text text-3xl md:text-5xl highlight">${escapeHTML(finalItemText)}</span></div>`;
+                if (onComplete) onComplete();
+                return;
+            }
+
+            let isFinished = false;
+            const finishSafely = () => {
+                if (isFinished) return;
+                isFinished = true;
+                if (onComplete) onComplete();
+            };
+
+            const fallbackTimer = setTimeout(() => finishSafely(), 4500);
+
+            gsap.killTweensOf(wheelEl);
+            wheelEl.innerHTML = '';
+            const totalItems = 35;
+            let sequence = [];
+            let pool = itemsPool && itemsPool.length > 0 ? itemsPool : ['...'];
+
+            for (let i = 0; i < totalItems - 3; i++) {
+                sequence.push(pool[Math.floor(Math.random() * pool.length)]);
+            }
+            sequence.push(finalItemText);
+            sequence.push(pool[Math.floor(Math.random() * pool.length)]);
+            sequence.push(pool[Math.floor(Math.random() * pool.length)]);
+
+            sequence.forEach(text => {
+                const div = document.createElement('div');
+                div.className = 'slot-item';
+                div.innerHTML = `<span class="slot-text text-3xl md:text-5xl">${escapeHTML(text)}</span>`;
+                wheelEl.appendChild(div);
+            });
+
+            setTimeout(() => {
+                let itemHeight = 90;
+                if (wheelEl.children[0] && wheelEl.children[0].clientHeight > 0) {
+                    itemHeight = wheelEl.children[0].clientHeight;
+                }
+                const targetY = (totalItems - 3) * itemHeight;
+
+                gsap.set(wheelEl, { y: 0 });
+                
+                gsap.to(wheelEl, {
+                    y: -targetY,
+                    duration: 2.8,
+                    ease: "back.out(1.1)",
+                    onComplete: () => {
+                        try {
+                            const winElement = wheelEl.children[totalItems - 3]?.querySelector('.slot-text');
+                            if (winElement) {
+                                winElement.classList.add('highlight');
+                                gsap.fromTo(
+                                    winElement,
+                                    { rotationX: -90, scale: 0.8, opacity: 0 },
+                                    {
+                                        rotationX: 0,
+                                        scale: 1.15,
+                                        opacity: 1,
+                                        duration: 0.5,
+                                        ease: "back.out(2)",
+                                        onComplete: () => {
+                                            gsap.to(winElement, {
+                                                scale: 1,
+                                                duration: 0.2,
+                                                onComplete: () => {
+                                                    clearTimeout(fallbackTimer);
+                                                    finishSafely();
+                                                }
+                                            });
+                                        }
+                                    }
+                                );
+                            } else {
+                                clearTimeout(fallbackTimer);
+                                finishSafely();
+                            }
+                        } catch(err) {
+                            console.error('揭曉動畫發生錯誤：', err);
+                            clearTimeout(fallbackTimer);
+                            finishSafely();
+                        }
+                    }
+                });
+            }, 50);
+        }
 
         function initDrawStage() {
-            resetRollingState(); updateHeaderStatus();
-            winnerName.innerHTML = `<iconify-icon icon="ph:gift-light" class="text-brand-rosegold animate-pulse text-8xl md:text-9xl"></iconify-icon>`; winnerName.style.color = '#4A3B32'; hidePrizeText();
-            btnName.classList.remove('hide-view'); btnName.disabled = false; btnName.classList.remove('opacity-60', 'cursor-not-allowed');
-            btnPrize.classList.add('hide-view'); btnPrize.disabled = false; btnPrize.classList.remove('opacity-60', 'cursor-not-allowed');
-            btnNext.classList.add('hide-view'); btnNext.disabled = false; btnNext.classList.remove('opacity-70', 'cursor-not-allowed');
+            roundStep = 0;
+            isRolling = false;
+            btnMainAction.classList.remove('hide-view');
+            btnMainAction.disabled = false;
             btnShowResults.classList.add('hide-view');
-            nextBtnText.textContent = "再抽下一位"; nextBtnIcon.setAttribute('icon', 'ph:arrow-counter-clockwise-bold'); nextBtnIcon.style.display = 'inline-block';
-            currentWinner = ''; currentPrize = '';
-            if (hasPrizes && currentDrawMode === 'sequential') { btnName.textContent = "公布本輪獎項"; } else { btnName.textContent = "抽取幸運兒"; }
+            configureDrawStageForCurrentRound(true);
         }
 
-        function checkAndShowNext() {
-            const namesDone = namesPool.length === 0; const prizesDone = !hasPrizes || (currentDrawMode === 'sequential' ? sequentialPrizeQueue.length === 0 : prizesPool.length === 0);
-            if (namesDone && prizesDone) { btnNext.classList.add('hide-view'); btnShowResults.classList.remove('hide-view'); return; }
-            btnShowResults.classList.add('hide-view'); btnNext.classList.remove('hide-view'); nextBtnText.textContent = "再抽下一位"; nextBtnIcon.style.display = 'inline-block'; btnNext.disabled = false; btnNext.classList.remove('opacity-70', 'cursor-not-allowed');
-        }
-
-        function finalizeWinnerSelection() {
-            const winIdx = Math.floor(Math.random() * namesPool.length); currentWinner = namesPool[winIdx]; namesPool.splice(winIdx, 1); updateHeaderStatus();
-            winnerName.textContent = currentWinner; winnerName.style.color = '#9E5C66';
-            gsap.fromTo(winnerName, { scale: 1.2, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(2)" });
-        }
-
-        btnName.addEventListener('click', () => {
-            if (namesPool.length === 0) { showToast('名單已全數抽完囉！', 'error'); return; }
-            if (hasPrizes && currentDrawMode === 'sequential') {
-                if (sequentialPrizeQueue.length === 0) { checkAndShowNext(); return; }
-                if (!isRollingPrize) {
-                    isRollingPrize = true; btnName.textContent = "停！(STOP)"; sonar.style.display = 'block'; winnerName.style.color = '#B76E79'; winnerName.textContent = '獎項揭曉中'; hidePrizeText(); showPrizeText(sequentialPrizeQueue[Math.floor(Math.random() * sequentialPrizeQueue.length)], false); winnerPrize.style.color = '#B76E79';
-                    shuffleInterval = setInterval(() => { winnerPrize.textContent = sequentialPrizeQueue[Math.floor(Math.random() * sequentialPrizeQueue.length)]; }, 40);
-                } else {
-                    isRollingPrize = false; clearInterval(shuffleInterval); sonar.style.display = 'none'; currentPrize = sequentialPrizeQueue.shift(); updateHeaderStatus(); winnerName.textContent = "本輪獎項"; winnerName.style.color = '#B76E79'; showPrizeText(currentPrize, true);
-                    gsap.fromTo(winnerPrize, { scale: 1.1, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.5)" });
-                    btnName.classList.add('hide-view'); btnPrize.classList.remove('hide-view'); btnPrize.textContent = "抽出此獎項得主";
-                }
+        btnMainAction.addEventListener('click', () => {
+            if (isRolling) return;
+            if (currentRoundIdx >= gameSchedule.length) {
+                showToast('抽獎已結束！', 'error');
                 return;
             }
-            if (!isRollingName) {
-                isRollingName = true; btnName.textContent = "停！(STOP)"; sonar.style.display = 'block'; winnerName.style.color = '#B76E79';
-                shuffleInterval = setInterval(() => { winnerName.textContent = namesPool[Math.floor(Math.random() * namesPool.length)]; }, 40);
-            } else {
-                isRollingName = false; clearInterval(shuffleInterval); sonar.style.display = 'none'; finalizeWinnerSelection(); btnName.classList.add('hide-view');
-                if (hasPrizes) { btnPrize.classList.remove('hide-view'); btnPrize.textContent = "為他抽取專屬獎項"; } else { currentPrize = ''; pushDrawResult(currentWinner, currentPrize); shootCelebrationPetals(); checkAndShowNext(); }
-            }
-        });
 
-        btnPrize.addEventListener('click', () => {
-            if (currentDrawMode === 'sequential' && hasPrizes) {
-                if (namesPool.length === 0) { showToast('名單已全數抽完囉！', 'error'); return; }
-                if (!isRollingName) {
-                    isRollingName = true; btnPrize.textContent = "停！(STOP)"; sonar.style.display = 'block'; winnerName.style.color = '#B76E79';
-                    shuffleInterval = setInterval(() => { winnerName.textContent = namesPool[Math.floor(Math.random() * namesPool.length)]; }, 40);
-                } else {
-                    isRollingName = false; clearInterval(shuffleInterval); sonar.style.display = 'none'; finalizeWinnerSelection(); pushDrawResult(currentWinner, currentPrize); shootCelebrationPetals(); btnPrize.classList.add('hide-view'); checkAndShowNext();
-                }
+            if (roundStep === 2) {
+                roundStep = 0;
+                configureDrawStageForCurrentRound(true);
+            }
+
+            const currentPair = gameSchedule[currentRoundIdx];
+            const roundHasPrize = !!(currentPair && currentPair.prize);
+
+            isRolling = true;
+
+            if (!roundHasPrize) {
+                btnMainAction.textContent = "開獎中...";
+                btnMainAction.disabled = true;
+                if (typeof gsap !== 'undefined') gsap.to(titleName, { opacity: 1, duration: 0.5 });
+
+                rollSlot(wheelName, currentPair.winner, fullNamesPool, () => {
+                    pushDrawResult(currentPair.winner, '');
+                    shootCelebrationPetals();
+
+                    currentRoundIdx++;
+                    if (currentRoundIdx >= gameSchedule.length) {
+                        btnMainAction.classList.add('hide-view');
+                        btnShowResults.classList.remove('hide-view');
+                    } else {
+                        btnMainAction.textContent = "再抽下一位";
+                        roundStep = 2;
+                    }
+                    btnMainAction.disabled = false;
+                    isRolling = false;
+                    updateHeaderStatus();
+                });
                 return;
             }
-            if (prizesPool.length === 0) { btnPrize.classList.add('hide-view'); checkAndShowNext(); return; }
-            if (!isRollingPrize) {
-                isRollingPrize = true; btnPrize.textContent = "停！(STOP)"; sonar.style.display = 'block'; winnerPrize.classList.remove('hidden'); winnerPrize.classList.add('flex'); winnerPrize.style.opacity = '1'; winnerPrize.style.transform = 'translateY(0)'; winnerPrize.style.color = '#B76E79';
-                shuffleInterval = setInterval(() => { winnerPrize.textContent = prizesPool[Math.floor(Math.random() * prizesPool.length)]; }, 40);
-            } else {
-                isRollingPrize = false; clearInterval(shuffleInterval); sonar.style.display = 'none'; const pIdx = Math.floor(Math.random() * prizesPool.length); const finalPrize = prizesPool[pIdx]; prizesPool.splice(pIdx, 1); updateHeaderStatus(); currentPrize = finalPrize; showPrizeText(finalPrize, true); pushDrawResult(currentWinner, currentPrize);
-                gsap.fromTo(winnerPrize, { scale: 1.1, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.5)" });
-                shootCelebrationPetals(); btnPrize.classList.add('hide-view'); checkAndShowNext();
+
+            if (currentDrawMode === 'random') {
+                if (roundStep === 0) {
+                    btnMainAction.textContent = "開獎中...";
+                    btnMainAction.disabled = true;
+                    if (typeof gsap !== 'undefined') gsap.to([titleName, drawDivider], { opacity: 1, duration: 0.5 });
+                    
+                    rollSlot(wheelName, currentPair.winner, fullNamesPool, () => {
+                        btnMainAction.textContent = "為他抽出專屬獎項";
+                        btnMainAction.disabled = false;
+                        roundStep = 1;
+                        isRolling = false;
+                    });
+                } else if (roundStep === 1) {
+                    btnMainAction.textContent = "開獎中...";
+                    btnMainAction.disabled = true;
+                    if (typeof gsap !== 'undefined') gsap.to(titlePrize, { opacity: 1, duration: 0.5 });
+                    
+                    rollSlot(wheelPrize, currentPair.prize, fullPrizesPool, () => {
+                        pushDrawResult(currentPair.winner, currentPair.prize);
+                        shootCelebrationPetals();
+                        
+                        currentRoundIdx++;
+                        if (currentRoundIdx >= gameSchedule.length) {
+                            btnMainAction.classList.add('hide-view');
+                            btnShowResults.classList.remove('hide-view');
+                        } else {
+                            btnMainAction.textContent = "再抽下一位";
+                            roundStep = 2;
+                        }
+                        btnMainAction.disabled = false;
+                        isRolling = false;
+                        updateHeaderStatus();
+                    });
+                }
+            } else if (currentDrawMode === 'sequential') {
+                if (roundStep === 0) {
+                    btnMainAction.textContent = "開獎中...";
+                    btnMainAction.disabled = true;
+                    if (typeof gsap !== 'undefined') gsap.to([titlePrize, drawDivider], { opacity: 1, duration: 0.5 });
+                    
+                    rollSlot(wheelPrize, currentPair.prize, fullPrizesPool, () => {
+                        btnMainAction.textContent = "抽出此獎項得主";
+                        btnMainAction.disabled = false;
+                        roundStep = 1;
+                        isRolling = false;
+                    });
+                } else if (roundStep === 1) {
+                    btnMainAction.textContent = "開獎中...";
+                    btnMainAction.disabled = true;
+                    if (typeof gsap !== 'undefined') gsap.to(titleName, { opacity: 1, duration: 0.5 });
+                    
+                    rollSlot(wheelName, currentPair.winner, fullNamesPool, () => {
+                        pushDrawResult(currentPair.winner, currentPair.prize);
+                        shootCelebrationPetals();
+                        
+                        currentRoundIdx++;
+                        if (currentRoundIdx >= gameSchedule.length) {
+                            btnMainAction.classList.add('hide-view');
+                            btnShowResults.classList.remove('hide-view');
+                        } else {
+                            btnMainAction.textContent = "再抽下一位";
+                            roundStep = 2;
+                        }
+                        btnMainAction.disabled = false;
+                        isRolling = false;
+                        updateHeaderStatus();
+                    });
+                }
             }
         });
 
-        btnNext.addEventListener('click', () => {
-            if (btnNext.disabled) return;
-            const tl = gsap.timeline(); tl.to([winnerName, winnerPrize], { opacity: 0, scale: 0.9, duration: 0.3 }).call(() => {
-                if (hasPrizes) {
-                    if (currentDrawMode === 'sequential' && sequentialPrizeQueue.length === 0 && namesPool.length > 0) { hasPrizes = false; }
-                    if (currentDrawMode === 'random' && prizesPool.length === 0 && namesPool.length > 0) { hasPrizes = false; }
-                }
-                initDrawStage();
-            }).to(winnerName, { opacity: 1, scale: 1, duration: 0.4 });
+        btnShowResults.addEventListener('click', () => {
+            renderResultsView();
+            switchView(drawView, resultsView);
         });
 
-        btnShowResults.addEventListener('click', () => { renderResultsView(); switchView(drawView, resultsView); });
-        document.getElementById('btn-back-draw').addEventListener('click', () => { switchView(resultsView, drawView); });
-        document.getElementById('btn-results-restart').addEventListener('click', () => { switchView(resultsView, setupView); });
+        document.getElementById('btn-back-draw').addEventListener('click', () => {
+            switchView(resultsView, drawView);
+        });
+
+        document.getElementById('btn-results-restart').addEventListener('click', () => {
+            switchView(resultsView, setupView);
+        });
 
         renderPrizeRows([]);
         updateParticipantCountDisplay();
     }
 
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initStoryWedLottery); } else { initStoryWedLottery(); }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initStoryWedLottery);
+    } else {
+        initStoryWedLottery();
+    }
 </script>
 </body>
 </html>
